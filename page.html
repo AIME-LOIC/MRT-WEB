@@ -1,0 +1,639 @@
+// ...existing code...
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MRT — Made in Rwanda Technologies</title>
+<link rel="icon" href="MRT-LOGO.png">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#002022;            /* primary dark cyan (kept) */
+  --text:#E6EEF0;          /* light text for dark mood */
+  --accent:#7EE7A5;        /* requested light green accent (no "nano" neon) */
+  --card:#071514;          /* card background (dark) */
+  --muted:rgba(230,238,240,0.65);
+  --glass: rgba(255,255,255,0.03);
+  transition: background .25s, color .25s;
+}
+
+/* baseline */
+*{box-sizing:border-box}
+html,body{height:100%;margin:0;font-family:'Poppins',sans-serif;-webkit-font-smoothing:antialiased}
+body{
+  background: var(--bg);
+  color: var(--text);
+  overflow-y:scroll;
+}
+
+/* animated background pattern (subtle, no gradient) */
+.bg-pattern {
+  position:fixed; inset:0; z-index:0; pointer-events:none;
+  background-image:
+    radial-gradient(rgba(126,231,165,0.03) 1px, transparent 1px),
+    radial-gradient(rgba(126,231,165,0.02) 1px, transparent 1px);
+  background-size: 28px 28px, 180px 180px;
+  mix-blend-mode: overlay; opacity:0.7;
+  animation: pan 28s linear infinite;
+}
+@keyframes pan { from { transform:translateY(0) } to { transform:translateY(-30px) } }
+
+/* Preloader */
+#preloader{position:fixed; inset:0; display:flex;align-items:center;justify-content:center;background:var(--bg);z-index:9999;transition:opacity .5s,visibility .5s}
+.spinner{width:56px;height:56px;border-radius:50%;border:6px solid rgba(255,255,255,0.04);border-top-color:var(--accent);animation:spin .9s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+body.loaded #preloader{opacity:0;visibility:hidden;pointer-events:none}
+
+/* Header sticky + visible on scroll */
+header{
+  position:fixed; top:0; left:0; right:0; z-index:60; display:flex; align-items:center; justify-content:space-between;
+  padding:12px 20px; transition:backdrop-filter .2s, background .18s, transform .2s;
+  background: rgba(0,0,0,0.16);
+  backdrop-filter: blur(6px);
+  border-bottom:1px solid rgba(255,255,255,0.03);
+}
+header.scrolled{ background: rgba(0,0,0,0.24); box-shadow:0 6px 30px rgba(0,0,0,0.4); }
+
+.brand{display:flex;gap:12px;align-items:center}
+.brand img{width:56px;height:56px;object-fit:cover;border-radius:10px;display:block;box-shadow:0 8px 30px rgba(126,231,165,0.03)}
+.brand .title{font-weight:800}
+.nav-links{display:flex;gap:18px;align-items:center;z-index:80}
+.nav-links a{color:var(--text);text-decoration:none;font-weight:600;padding:6px 4px;border-radius:6px;transition:color .12s,transform .12s}
+.nav-links a:hover{color:var(--accent);transform:translateY(-3px)}
+.nav-links a:focus{outline:2px solid rgba(126,231,165,0.08);outline-offset:3px}
+
+/* mobile nav */
+.nav-toggle{display:none}
+@media(max-width:920px){
+  .nav-links{position:fixed;top:72px;right:16px;flex-direction:column;background:var(--card);padding:18px;border-radius:12px;gap:12px;display:none}
+  .nav-links.nav-open{display:flex}
+  .nav-toggle{display:flex;align-items:center;gap:6px;background:transparent;border:none;color:var(--text);cursor:pointer}
+}
+
+/* header actions */
+.header-actions{display:flex;gap:10px;align-items:center}
+.btn-primary{background:var(--accent);color:#001;font-weight:700;padding:10px 16px;border-radius:12px;border:none;cursor:pointer;box-shadow:0 8px 28px rgba(126,231,165,0.06)}
+.toggle-btn{background:transparent;border:1px solid rgba(255,255,255,0.04);color:var(--text);padding:6px 10px;border-radius:9px;cursor:pointer}
+
+/* Hero - solid colors, moving text, no gradients */
+main{padding-top:84px;position:relative;z-index:10}
+.hero{width:100%;min-height:78vh;display:flex;align-items:center;justify-content:center;padding:48px 20px;position:relative;overflow:hidden;background:transparent}
+.hero .hero-inner{max-width:1100px;text-align:left;display:grid;grid-template-columns:1fr 420px;gap:30px;align-items:center}
+@media(max-width:920px){ .hero .hero-inner{grid-template-columns:1fr; text-align:center} }
+
+.hero h1{font-size:clamp(30px,6vw,64px);margin:0 0 12px;letter-spacing:-0.6px;line-height:1.02;color:var(--text)}
+.hero p.sub{color:var(--muted);max-width:740px}
+
+/* moving marquee-style tagline (accessible, CSS animation) */
+.marquee{
+  overflow:hidden; white-space:nowrap; margin-top:18px; padding:6px 0;
+  border-radius:8px; background:var(--glass); color:var(--accent); font-weight:600;
+}
+.marquee .track{display:inline-block;padding-left:100%; animation: marquee 16s linear infinite;}
+@keyframes marquee { from { transform:translateX(0) } to { transform:translateX(-50%) } }
+
+/* hero visual - subtle floating panel (no gradient) */
+.hero-visual{position:relative;background:var(--card);padding:18px;border-radius:16px;box-shadow:0 18px 60px rgba(0,0,0,0.5);height:320px;display:flex;align-items:center;justify-content:center;overflow:hidden;}
+.hero-visual .float {position:absolute;width:260px;height:260px;border-radius:12px;opacity:0.06;background:var(--accent);animation:float 8s ease-in-out infinite;}
+@keyframes float{0%{transform:translateY(0) rotate(0)}50%{transform:translateY(-12px) rotate(2deg)}100%{transform:translateY(0) rotate(0)}}
+
+/* metrics */
+.metrics{display:flex;gap:18px;margin-top:18px}
+.metric{background:var(--card);padding:12px 14px;border-radius:12px;min-width:120px;box-shadow:0 10px 40px rgba(0,0,0,0.5)}
+.metric h3{margin:0;color:var(--accent)}
+
+/* sections */
+section{padding:56px 20px}
+.container{max-width:1100px;margin:0 auto}
+
+/* reveals */
+.reveal{opacity:0;transform:translateY(14px);transition:opacity .6s ease,transform .6s ease}
+.reveal.visible{opacity:1;transform:none}
+
+/* cards & flips */
+.grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+@media(max-width:920px){ .grid-3{grid-template-columns:1fr 1fr} }
+@media(max-width:600px){ .grid-3{grid-template-columns:1fr} }
+
+.card{background:var(--card);padding:18px;border-radius:12px;box-shadow:0 10px 40px rgba(0,0,0,0.5);min-height:160px;display:flex;flex-direction:column;justify-content:space-between}
+.card .learn{margin-top:12px;padding:8px 12px;border-radius:10px;background:transparent;border:1px solid rgba(255,255,255,0.04);color:var(--accent);cursor:pointer}
+
+/* flip */
+.card-flip{background:none;padding:0;perspective:1200px;cursor:pointer}
+.card-inner{position:relative;transition:transform .7s;transform-style:preserve-3d;min-height:220px}
+.card-inner.is-flipped{transform:rotateY(180deg)}
+.card-front,.card-back{background:var(--card);border-radius:12px;padding:18px;position:absolute;inset:0;backface-visibility:hidden;display:flex;flex-direction:column;justify-content:space-between}
+.card-back{transform:rotateY(180deg)}
+.card-flip-prompt{font-size:13px;color:var(--accent);text-align:right;font-weight:700}
+
+/* team */
+.team-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;margin-top:24px}
+@media(max-width:920px){ .team-grid{grid-template-columns:repeat(2,1fr)} }
+.team-member{background:var(--card);padding:16px;border-radius:12px;text-align:center;transition:transform .25s,box-shadow .25s}
+.team-member:hover{transform:translateY(-8px);box-shadow:0 18px 60px rgba(126,231,165,0.04)}
+.member-photo{width:96px;height:96px;border-radius:12px;object-fit:cover;margin:0 auto 12px;display:block;border:3px solid rgba(126,231,165,0.04)}
+
+/* footer */
+footer{padding:28px 20px;border-top:1px solid rgba(255,255,255,0.03);color:var(--text)}
+
+/* modal & toasts */
+.modal{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,0.6);z-index:120;opacity:0;pointer-events:none;transition:opacity .18s}
+.modal.show{opacity:1;pointer-events:auto}
+.modal .panel{background:var(--card);color:var(--text);width:92%;max-width:760px;border-radius:12px;padding:18px;box-shadow:0 24px 60px rgba(0,0,0,0.6)}
+.toast{position:fixed;right:18px;bottom:18px;background:var(--accent);color:#001;padding:12px 14px;border-radius:12px;box-shadow:0 12px 40px rgba(0,0,0,0.5);z-index:130;display:flex;gap:10px;align-items:center}
+
+/* cookie consent */
+#cookie-consent{position:fixed;left:12px;right:12px;bottom:12px;background:rgba(0,0,0,0.6);color:var(--text);padding:12px;border-radius:10px;display:flex;justify-content:space-between;gap:12px;align-items:center;z-index:140}
+#cookie-consent button{background:var(--accent);border:none;padding:8px 12px;border-radius:8px;cursor:pointer;color:#001}
+
+/* small screens refinements */
+@media(max-width:520px){
+  .hero .hero-inner{padding:0}
+  .brand img{width:48px;height:48px}
+}
+</style>
+</head>
+<body>
+<div class="bg-pattern" aria-hidden="true"></div>
+<div id="preloader"><div class="spinner" role="status" aria-hidden="true"></div></div>
+
+<header id="site-header" aria-label="Main header">
+  <div class="brand">
+    <a href="/" aria-label="MRT Home"><img src="MRT-LOGO.png" alt="MRT logo"></a>
+    <div>
+      <div class="title">MRT</div>
+      <div style="font-size:12px;color:var(--accent)">Made in Rwanda Technologies</div>
+    </div>
+  </div>
+
+  <nav class="nav-links" id="main-nav" aria-label="Main navigation">
+    <a href="#about">About</a>
+    <a href="#ecosystem">Features</a>
+    <a href="#devhub">Use Cases</a>
+    <a href="#team">Team</a>
+    <a href="#contact">Contact</a>
+  </nav>
+
+  <div class="header-actions">
+    <button id="game-open" class="toggle-btn" title="Play a quick game">Play</button>
+    <button id="theme-toggle" class="toggle-btn" aria-pressed="false">Light Mode</button>
+    <button id="premium-btn" class="btn-primary">Premium</button>
+  </div>
+
+  <button class="nav-toggle" aria-label="Toggle navigation" aria-expanded="false" aria-controls="main-nav">
+    ☰
+  </button>
+</header>
+
+<main>
+  <section class="hero">
+    <div class="hero-inner hero-content reveal">
+      <div>
+        <h1>Empowering Rwanda's Tech Future.</h1>
+        <p class="sub">A premium Rwandan platform for businesses, companies and individuals — use apps without downloading them. Built local-first for scale and accessibility.</p>
+
+        <div class="marquee" aria-hidden="true">
+          <div class="track">Local-first • Offline-capable • Secure • Build for Rwanda • Scale across Africa • Proudly Made in Rwanda •</div>
+        </div>
+
+        <div style="margin-top:18px">
+          <button class="btn-primary" onclick="scrollToId('ecosystem')">Explore Features</button>
+          <button class="toggle-btn" onclick="scrollToId('devhub')">How it helps businesses</button>
+        </div>
+
+        <div class="metrics" style="margin-top:22px">
+          <div class="metric"><h3 id="m-devs">0</h3><div style="font-size:12px;color:var(--accent)">Builders</div></div>
+          <div class="metric"><h3 id="m-projects">0</h3><div style="font-size:12px;color:var(--accent)">Partners</div></div>
+          <div class="metric"><h3 id="m-users">0</h3><div style="font-size:12px;color:var(--accent)">Target Users</div></div>
+        </div>
+      </div>
+
+      <div class="hero-visual">
+        <div class="float" style="right: -40px; top: 20px;"></div>
+        <svg width="320" height="220" viewBox="0 0 320 220" fill="none" aria-hidden="true">
+          <rect x="8" y="8" width="304" height="204" rx="14" fill="rgba(255,255,255,0.02)"/>
+          <g stroke="rgba(126,231,165,0.9)" stroke-width="1" fill="none">
+            <path d="M12 170 C 70 120, 140 200, 260 160" opacity="0.2"></path>
+            <path d="M12 140 C 90 80, 160 180, 310 120" opacity="0.32"></path>
+          </g>
+        </svg>
+      </div>
+    </div>
+  </section>
+
+  <section id="about" class="reveal container">
+    <h2 style="text-align:center">About MRT</h2>
+    <p style="text-align:center;color:var(--accent)">Local-first. Accessible. Ready for businesses and individuals.</p>
+
+    <div style="margin-top:18px" class="grid-3">
+      <div class="card reveal"><h3>Problem</h3><p>Apps are fragmented — multiple downloads, multiple logins, wasted storage and time.</p></div>
+      <div class="card reveal"><h3>Mission</h3><p>Provide a connected platform that reduces friction for users and empowers local builders and companies to reach customers.</p></div>
+      <div class="card reveal"><h3>Vision</h3><p>Enable businesses and individuals to access robust apps instantly — no installs needed.</p></div>
+    </div>
+
+    <div class="roadmap reveal" style="margin-top:22px">
+      <div class="road-step"><div class="badge">1</div><div><strong>Foundation</strong><div class="text-muted">Hub & Wallet</div></div></div>
+      <div class="road-step"><div class="badge">2</div><div><strong>Growth</strong><div class="text-muted">Onboard partners & companies</div></div></div>
+      <div class="road-step"><div class="badge">3</div><div><strong>Scale</strong><div class="text-muted">Reach millions across Rwanda & Africa</div></div></div>
+    </div>
+  </section>
+
+  <section id="ecosystem" class="container reveal">
+    <h2 style="text-align:center">Features</h2>
+    <p style="text-align:center;color:var(--accent)">Instant apps, offline-first capabilities, integrated payments and secure sign-on — aimed at businesses, companies and individuals.</p>
+
+    <div class="grid-3" style="margin-top:20px">
+      <div class="card card-flip reveal" tabindex="0" role="button" aria-pressed="false">
+        <div class="card-inner">
+          <div class="card-front">
+            <div><h3>Instant Apps</h3><p>Open lightweight apps instantly without full downloads. Great for customers with limited storage.</p></div>
+            <div class="card-flip-prompt">Click to learn more</div>
+          </div>
+          <div class="card-back">
+            <div><h3>Instant Apps Details</h3><p>Fast load, small cache, and easy updates — designed to reduce friction for users and businesses.</p></div>
+            <div class="card-flip-prompt">Click to return</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card card-flip reveal" tabindex="0" role="button" aria-pressed="false">
+        <div class="card-inner">
+          <div class="card-front"><div><h3>Offline-first</h3><p>Sync when online, work offline for key features — ideal for remote and low-bandwidth areas.</p></div><div class="card-flip-prompt">Click to learn more</div></div>
+          <div class="card-back"><div><h3>Offline Details</h3><p>Local caching, background sync and delta updates to keep apps responsive with poor connectivity.</p></div><div class="card-flip-prompt">Click to return</div></div>
+        </div>
+      </div>
+
+      <div class="card card-flip reveal" tabindex="0" role="button" aria-pressed="false">
+        <div class="card-inner">
+          <div class="card-front"><div><h3>Payments & Wallet</h3><p>Integrate local payments and subscriptions with built-in wallet support.</p></div><div class="card-flip-prompt">Click to learn more</div></div>
+          <div class="card-back"><div><h3>Payments Details</h3><p>Mobile-money integration, invoices and merchant dashboards for businesses.</p></div><div class="card-flip-prompt">Click to return</div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="devhub" class="container reveal">
+    <h2 style="text-align:center">How MRT Helps</h2>
+    <p style="text-align:center;color:var(--accent)">Companies, small businesses and individuals can deploy services, accept payments and reach users instantly.</p>
+    <div style="display:flex;gap:16px;flex-wrap:wrap;justify-content:center;margin-top:18px">
+      <div class="card" style="min-width:280px"><h3>For Businesses</h3><p>Publish customer-facing apps instantly without asking users to install.</p></div>
+      <div class="card" style="min-width:280px"><h3>For Companies</h3><p>Enterprise integrations, dashboards and merchant tools tailored for local payment providers.</p></div>
+      <div class="card" style="min-width:280px"><h3>For Individuals</h3><p>Discover and use apps quickly — low storage, low data usage and offline features.</p></div>
+    </div>
+  </section>
+
+  <section id="team" class="container reveal">
+    <h2 style="text-align:center">Team</h2>
+    <p style="text-align:center;color:var(--accent)">Engineers, designers and operators building MRT.</p>
+    <div class="team-grid">
+      <div class="team-member reveal">
+        <img class="member-photo" src="MRT-LOGO.png" alt="Aime">
+        <div style="font-weight:700">Aime (Founder)</div>
+        <div style="font-size:13px;color:var(--accent)">Product & Vision</div>
+      </div>
+      <div class="team-member reveal">
+        <img class="member-photo" src="MRT-LOGO.png" alt="Claire">
+        <div style="font-weight:700">Claire</div>
+        <div style="font-size:13px;color:var(--accent)">Engineering</div>
+      </div>
+      <div class="team-member reveal">
+        <img class="member-photo" src="MRT-LOGO.png" alt="Ibra">
+        <div style="font-weight:700">Ibra</div>
+        <div style="font-size:13px;color:var(--accent)">DevOps</div>
+      </div>
+      <div class="team-member reveal">
+        <img class="member-photo" src="MRT-LOGO.png" alt="Nadine">
+        <div style="font-weight:700">Nadine</div>
+        <div style="font-size:13px;color:var(--accent)">Design & UX</div>
+      </div>
+    </div>
+  </section>
+
+  <section id="partners" class="container reveal">
+    <h2 style="text-align:center">Partners & Sponsors</h2>
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:18px">
+      <div class="card">Rwanda ICT</div>
+      <div class="card">Local University</div>
+      <div class="card">Startup Fund</div>
+      <div class="card">Industry Partner</div>
+    </div>
+  </section>
+
+  <section id="impact" class="container reveal">
+    <h2 style="text-align:center">Impact</h2>
+    <div class="metrics" style="justify-content:center;margin-top:18px">
+      <div class="metric"><h3>95%</h3><div style="font-size:12px;color:var(--accent)">Task Completion</div></div>
+      <div class="metric"><h3>80%</h3><div style="font-size:12px;color:var(--accent)">User Satisfaction</div></div>
+      <div class="metric"><h3>50+</h3><div style="font-size:12px;color:var(--accent)">SMEs Supported</div></div>
+    </div>
+  </section>
+
+  <section id="contact" class="container reveal" style="text-align:center">
+    <h2>Contact</h2>
+    <form class="contact-form" id="contact-form" style="margin-top:18px">
+      <input type="text" name="name" placeholder="Your Name" required style="background:transparent;border:1px solid rgba(126,231,165,0.06);border-radius:9px;padding:10px;color:var(--text)">
+      <input type="email" name="email" placeholder="Email" required style="background:transparent;border:1px solid rgba(126,231,165,0.06);border-radius:9px;padding:10px;color:var(--text)">
+      <textarea name="message" placeholder="Message" required style="background:transparent;border:1px solid rgba(126,231,165,0.06);border-radius:9px;padding:10px;color:var(--text)"></textarea>
+      <div style="margin-top:10px"><button class="btn-primary" type="submit">Send</button></div>
+      <p id="status" style="color:var(--accent)"></p>
+    </form>
+    <p style="margin-top:12px;color:var(--accent)">Email: <a href="mailto:contact@mrt.rw" style="color:var(--accent)">contact@mrt.rw</a></p>
+  </section>
+</main>
+
+<footer>
+  <div class="container" style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap">
+    <div style="display:flex;gap:12px;align-items:center">
+      <img src="MRT-LOGO.png" alt="MRT" style="width:40px;height:40px;border-radius:8px">
+      <div><strong>MRT</strong><div style="font-size:13px;color:var(--accent)">Made in Rwanda Technologies</div></div>
+    </div>
+    <div style="display:flex;gap:12px;align-items:center">
+      <a href="#about" style="color:var(--text)">About</a>
+      <a href="#contact" style="color:var(--text)">Contact</a>
+      <a href="#" style="color:var(--text)">Terms</a>
+    </div>
+  </div>
+  <div style="text-align:center;margin-top:12px;color:rgba(230,238,240,0.6)">Made with ♥ in Rwanda — © <span id="year">2025</span></div>
+</footer>
+
+<!-- modals & toast -->
+<div id="generic-modal" class="modal" aria-hidden="true">
+  <div class="panel" role="dialog" aria-modal="true">
+    <div id="generic-modal-title" style="font-weight:800"></div>
+    <div id="generic-modal-body" style="margin-top:12px;color:var(--text)"></div>
+    <div style="margin-top:14px;text-align:right">
+      <button onclick="closeGenericModal()" style="background:transparent;border:1px solid rgba(255,255,255,0.06);padding:8px 12px;border-radius:8px;margin-right:8px">Close</button>
+      <button id="generic-modal-action" class="btn-primary" onclick="closeGenericModal()">OK</button>
+    </div>
+  </div>
+</div>
+
+<div id="game-modal" class="modal" aria-hidden="true">
+  <div class="panel" role="dialog" aria-modal="true" style="max-width:980px">
+    <div style="display:flex;justify-content:space-between;align-items:center">
+      <h3 id="game-title" style="margin:0">Play while you wait — Catch the Stars</h3>
+      <div style="display:flex;gap:8px;align-items:center">
+        <button id="restart-game" style="background:transparent;border:1px solid var(--accent);padding:6px;border-radius:8px;color:var(--accent);cursor:pointer">Restart</button>
+        <button id="close-game" style="background:none;border:none;font-size:20px;cursor:pointer">✕</button>
+      </div>
+    </div>
+
+    <div style="display:flex;gap:12px;align-items:flex-start;flex-wrap:wrap;margin-top:12px">
+      <div style="flex:1;min-width:300px">
+        <canvas id="gameCanvas" class="game-canvas" width="720" height="360" style="width:100%;height:260px;display:block;background:#001214;border-radius:8px"></canvas>
+        <div style="display:flex;justify-content:space-between;margin-top:10px">
+          <div style="color:var(--accent)">Score: <span id="game-score">0</span></div>
+          <div style="color:var(--accent)">Lives: <span id="game-lives">3</span></div>
+        </div>
+      </div>
+      <div style="width:260px;min-width:230px">
+        <p style="color:var(--accent)"><strong>How to play</strong></p>
+        <p style="margin-top:6px">Click the glowing stars before they fall. Earn points and survive — great for short waits on slow connections.</p>
+        <p style="margin-top:8px"><em>Tip:</em> Bigger stars = more points. Avoid gray rocks (they cost a life).</p>
+        <div style="margin-top:12px"><button id="play-now" class="btn-primary">Start Playing</button></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="cookie-consent" style="display:none" role="dialog" aria-live="polite">
+  <div style="color:var(--text)">We use cookies to improve your experience. By continuing you agree to our use of cookies.</div>
+  <div style="display:flex;gap:8px">
+    <button id="accept-cookies">Accept</button>
+    <button id="dismiss-cookies" style="background:transparent;border:1px solid rgba(255,255,255,0.06);color:var(--text);padding:8px 12px;border-radius:8px">Dismiss</button>
+  </div>
+</div>
+
+<script>
+/* PRELOADER */
+window.addEventListener('load', () => { document.body.classList.add('loaded'); });
+
+/* THEME: default dark, toggle persist */
+(function initTheme(){
+  const saved = localStorage.getItem('mrt-theme');
+  const theme = saved || 'dark';
+  document.documentElement.setAttribute('data-theme', theme);
+  document.getElementById('theme-toggle').textContent = theme === 'dark' ? 'Light Mode' : 'Dark Mode';
+})();
+document.getElementById('theme-toggle').addEventListener('click', () => {
+  const current = document.documentElement.getAttribute('data-theme') || 'dark';
+  const next = current === 'dark' ? 'light' : 'dark';
+  document.documentElement.setAttribute('data-theme', next);
+  localStorage.setItem('mrt-theme', next);
+  document.getElementById('theme-toggle').textContent = next === 'dark' ? 'Light Mode' : 'Dark Mode';
+});
+
+/* HEADER: add scrolled class when page moves */
+const header = document.getElementById('site-header');
+window.addEventListener('scroll', () => {
+  const y = window.scrollY;
+  if (y > 24) header.classList.add('scrolled'); else header.classList.remove('scrolled');
+});
+
+/* NAV TOGGLE for mobile */
+const navToggle = document.querySelector('.nav-toggle');
+const navLinks = document.getElementById('main-nav');
+if(navToggle){
+  navToggle.addEventListener('click', ()=>{
+    navLinks.classList.toggle('nav-open');
+    navToggle.setAttribute('aria-expanded', navLinks.classList.contains('nav-open'));
+  });
+  navLinks.querySelectorAll('a').forEach(a => a.addEventListener('click', ()=>{ navLinks.classList.remove('nav-open'); navToggle.setAttribute('aria-expanded', false); }));
+}
+
+/* SCROLL helper */
+function scrollToId(id){ const el = document.getElementById(id); if(el) el.scrollIntoView({behavior:'smooth', block:'start'}); }
+
+/* REVEAL ON SCROLL */
+const reveals = document.querySelectorAll('.reveal');
+const io = new IntersectionObserver((entries)=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting) e.target.classList.add('visible');
+  });
+},{threshold:0.12});
+reveals.forEach(r=>io.observe(r));
+
+/* METRICS */
+function animateCount(el, to, duration=1200){
+  const start = 0, t0 = performance.now();
+  (function tick(now){
+    const t = Math.min(1,(now - t0)/duration);
+    el.textContent = Math.floor(start + (to - start) * t).toLocaleString();
+    if(t < 1) requestAnimationFrame(tick);
+  })(performance.now());
+}
+document.addEventListener('DOMContentLoaded', ()=>{
+  animateCount(document.getElementById('m-devs'), 120);
+  animateCount(document.getElementById('m-projects'), 48);
+  animateCount(document.getElementById('m-users'), 150000);
+  document.getElementById('year').textContent = new Date().getFullYear();
+});
+
+/* CARD FLIP */
+document.querySelectorAll('.card-flip').forEach(card=>{
+  const inner = card.querySelector('.card-inner');
+  card.addEventListener('click', e=>{
+    if(e.target.closest('button,a')) return;
+    inner.classList.toggle('is-flipped');
+    card.setAttribute('aria-pressed', inner.classList.contains('is-flipped'));
+  });
+  card.addEventListener('keydown', e=>{
+    if(e.key === 'Enter' || e.key === ' ') { e.preventDefault(); inner.classList.toggle('is-flipped'); }
+  });
+});
+
+/* GENERIC MODAL (replaces alerts) */
+function openGenericModal(title, html, actionLabel, actionCb){
+  const modal = document.getElementById('generic-modal');
+  document.getElementById('generic-modal-title').textContent = title || '';
+  document.getElementById('generic-modal-body').innerHTML = html || '';
+  const actionBtn = document.getElementById('generic-modal-action');
+  actionBtn.textContent = actionLabel || 'OK';
+  actionBtn.onclick = function(){
+    if(typeof actionCb === 'function') actionCb();
+    closeGenericModal();
+  };
+  modal.classList.add('show'); modal.setAttribute('aria-hidden','false');
+}
+function closeGenericModal(){ const modal = document.getElementById('generic-modal'); modal.classList.remove('show'); modal.setAttribute('aria-hidden','true'); }
+
+/* PREMIUM modal */
+document.getElementById('premium-btn').addEventListener('click', ()=>{
+  openGenericModal('MRT Premium Plans',
+    `<p style="color:var(--accent)">Unlock Hub / Ecosystem features and priority support.</p>
+     <div style="display:flex;gap:12px;margin-top:12px">
+       <div style="flex:1;padding:12px;border-radius:10px;background:var(--card)"><h4>MRT Hub</h4><div style="color:var(--accent)">$10/month</div></div>
+       <div style="flex:1;padding:12px;border-radius:10px;background:var(--card)"><h4>MRT Ecosystem</h4><div style="color:var(--accent)">$15/month</div></div>
+       <div style="flex:1;padding:12px;border-radius:10px;background:var(--card)"><h4>Bundle</h4><div style="color:var(--accent)">$22/month</div></div>
+     </div>`,
+    'Start checkout',
+    ()=>{ openGenericModal('Checkout (demo)','<p>Server checkout required (integrate Stripe / M-Pesa).</p>','Close'); }
+  );
+});
+
+/* CONTACT FORM - POST to Formspree (status inline) */
+const contactForm = document.getElementById('contact-form');
+if(contactForm){
+  contactForm.addEventListener('submit', async (e)=>{
+    e.preventDefault();
+    const status = document.getElementById('status');
+    status.textContent = 'Sending...';
+    const data = new FormData(contactForm);
+    try{
+      const res = await fetch('https://formspree.io/f/xdkpgrrb', { method:'POST', body:data, headers:{'Accept':'application/json'} });
+      if(res.ok){ status.textContent='Thanks — we will reply soon.'; contactForm.reset(); }
+      else { const j = await res.json().catch(()=>{}); status.textContent = (j && j.error) ? j.error : 'Error sending message'; }
+    }catch(err){ status.textContent='Network error. Try again later.'; }
+  });
+}
+
+/* COOKIE CONSENT */
+const cookieBar = document.getElementById('cookie-consent');
+if(!localStorage.getItem('mrt-cookies')) cookieBar.style.display = 'flex';
+document.getElementById('accept-cookies').addEventListener('click', ()=>{
+  localStorage.setItem('mrt-cookies','accepted'); cookieBar.style.display = 'none';
+});
+document.getElementById('dismiss-cookies').addEventListener('click', ()=>{ cookieBar.style.display = 'none'; });
+
+/* MINI-GAME adjustments: kept hidden, show toast on slow connections */
+let game = { ctx: null, w:720, h:360, stars:[], running:false, score:0, lives:3, spawnRate:900, lastSpawn:0 };
+function startGame(){
+  const canvas = document.getElementById('gameCanvas');
+  if(!canvas) return;
+  const dpr = window.devicePixelRatio || 1;
+  game.ctx = canvas.getContext('2d');
+  game.w = canvas.width = canvas.clientWidth * dpr;
+  game.h = canvas.height = canvas.clientHeight * dpr;
+  canvas.style.width = canvas.clientWidth + 'px';
+  canvas.style.height = canvas.clientHeight + 'px';
+  game.stars=[]; game.score=0; game.lives=3; game.running=true; game.spawnRate = 900; game.lastSpawn = performance.now();
+  document.getElementById('game-score').textContent = '0'; document.getElementById('game-lives').textContent = '3';
+  requestAnimationFrame(loop);
+}
+function loop(ts){
+  if(!game.running) return;
+  const ctx = game.ctx; ctx.clearRect(0,0,game.w,game.h);
+  if(ts - game.lastSpawn > game.spawnRate){ spawnObject(); game.lastSpawn = ts; if(game.spawnRate > 380) game.spawnRate *= 0.985; }
+  for(let i=game.stars.length-1;i>=0;i--){
+    const s = game.stars[i]; s.y += s.v;
+    const grad = ctx.createRadialGradient(s.x, s.y, 0, s.x, s.y, s.r*3);
+    grad.addColorStop(0, s.color); grad.addColorStop(1, 'rgba(0,0,0,0)');
+    ctx.fillStyle = grad; ctx.beginPath(); ctx.arc(s.x, s.y, s.r,0,Math.PI*2); ctx.fill();
+    if(s.y - s.r > game.h){ if(!s.clicked && !s.safe){ game.lives--; document.getElementById('game-lives').textContent = game.lives; } game.stars.splice(i,1); }
+  }
+  if(game.lives <= 0){ endGame(); return; }
+  requestAnimationFrame(loop);
+}
+function spawnObject(){
+  const w = game.w; const size = Math.random()*16 + 8; const x = Math.random()*(w - size*2) + size;
+  const colorType = Math.random(); let color='rgba(126,231,165,0.95)'; let safe=true;
+  if(colorType > 0.84){ color='rgba(255,200,80,0.95)'; }
+  if(colorType < 0.08){ color='rgba(150,150,150,0.95)'; safe=false; }
+  game.stars.push({x, y:-20, r:size, v: Math.random()*1.8 + 0.6, color, clicked:false, safe});
+}
+document.getElementById('gameCanvas').addEventListener('pointerdown', (ev)=>{
+  if(!game.running) return;
+  const rect = ev.target.getBoundingClientRect(); const scaleX = game.w / rect.width;
+  const mx = (ev.clientX - rect.left) * scaleX, my = (ev.clientY - rect.top) * (game.h/rect.height);
+  for(let i=game.stars.length-1;i>=0;i--){
+    const s = game.stars[i]; const dx = s.x - mx, dy = s.y - my;
+    if(dx*dx + dy*dy <= s.r*s.r){
+      s.clicked=true;
+      if(s.color.includes('255,200')) game.score += 10;
+      else if(s.color.includes('150,150')) { game.lives--; document.getElementById('game-lives').textContent = game.lives; }
+      else game.score += 3;
+      game.stars.splice(i,1);
+      document.getElementById('game-score').textContent = game.score;
+      break;
+    }
+  }
+});
+function endGame(){
+  game.running=false;
+  openGenericModal('Game Over', `<p style="color:var(--accent)">Score: ${game.score}</p><p>Nice play — try again or return to the site.</p>`, 'Play again', ()=>{ startGame(); });
+}
+
+/* Game modal controls */
+function openGame(){ document.getElementById('game-modal').classList.add('show'); document.getElementById('game-modal').setAttribute('aria-hidden','false'); startGame(); }
+function closeGame(){ document.getElementById('game-modal').classList.remove('show'); document.getElementById('game-modal').setAttribute('aria-hidden','true'); game.running=false; }
+document.getElementById('game-open').addEventListener('click', ()=>{ openGame(); });
+document.getElementById('play-now').addEventListener('click', ()=>{ startGame(); });
+document.getElementById('close-game').addEventListener('click', ()=>{ closeGame(); });
+document.getElementById('restart-game').addEventListener('click', ()=>{ startGame(); });
+
+/* Slow connection detection: unobtrusive toast invite */
+function showToast(message, actionLabel, actionCb, ttl=12000){
+  const t = document.createElement('div'); t.className='toast'; t.innerHTML = `<div>${message}</div>`;
+  if(actionLabel){
+    const btn = document.createElement('button'); btn.textContent = actionLabel; btn.style.border='none'; btn.style.padding='8px 10px'; btn.style.borderRadius='8px'; btn.style.cursor='pointer';
+    btn.onclick = ()=>{ actionCb && actionCb(); if(document.body.contains(t)) document.body.removeChild(t); };
+    t.appendChild(btn);
+  }
+  document.body.appendChild(t);
+  setTimeout(()=>{ if(document.body.contains(t)) document.body.removeChild(t); }, ttl);
+}
+function checkConnection(){
+  const nav = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+  let slow=false;
+  if(nav){ slow = (nav.effectiveType && (nav.effectiveType.includes('2g') || nav.effectiveType === 'slow-2g')) || (nav.downlink && nav.downlink < 0.4); }
+  else { slow = !navigator.onLine; }
+  if(slow){
+    showToast('Slow connection detected — play a short offline game while you wait.', 'Play', ()=>{ openGame(); }, 15000);
+  }
+}
+window.addEventListener('load', ()=>{ setTimeout(checkConnection, 3000); });
+
+/* Accessibility: close modals on Escape */
+window.addEventListener('keydown', (e)=>{ if(e.key === 'Escape'){ closeGenericModal(); closeGame(); } });
+
+/* ensure modals close when clicking outside panel */
+document.getElementById('generic-modal').addEventListener('click', (e)=>{
+  if(e.target.id === 'generic-modal') closeGenericModal();  
+});
+document.getElementById('game-modal').addEventListener('click', (e)=>{
+  if(e.target.id === 'game-modal') closeGame();  
+});
+</script>
+</body>
+</html>

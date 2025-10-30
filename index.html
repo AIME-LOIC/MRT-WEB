@@ -9,8 +9,8 @@
 <style>
 :root{
   /* light / dark palette definitions */
-  --bg-light:#FAFAFA; --text-light:#0F172A; --accent:#14B8A6; --card:#FFFFFF; --highlight:#CCFBF1;
-  --bg-dark:#0B0B0D; --text-dark:#E6EEF0; --accent-dark:#00E5FF; --card-dark:#0F1720; --highlight-dark:#023238;
+  --bg-light:#FAFAFA; --text-light:#0F172A; --accent:#00ff22; --card:#FFFFFF; --highlight:#CCFBF1;
+  --bg-dark:#0B0B0D; --text-dark:#E6EEF0; --accent-dark:#019715f5; --card-dark:#0F1720; --highlight-dark:#023238;
 
   /* active tokens */
   --bg: var(--bg-light);
@@ -239,7 +239,7 @@ section{padding:48px 20px;}
 }
 .card h3{margin:0 0 10px;}
 .card p{margin:0; color:#64748B;}
-.contact-form{display:grid; gap:12px;}
+.contact-form{display:grid; gap:12px; width: 400px; max-width:100%; margin:0 auto;}
 input,textarea{padding:12px; border-radius:10px; border:1px solid rgba(15,23,42,0.1); width:100%;}
 textarea{min-height:120px; resize:vertical;}
 footer{padding:24px 20px; text-align:center; font-size:14px; color:#64748B; border-top:1px solid rgba(0,0,0,0.05);}
@@ -362,7 +362,7 @@ footer{padding:24px 20px; text-align:center; font-size:14px; color:#64748B; bord
 
   <section id="about">
     <div class="container">
-      <h2>About MRT</h2>
+      <h2 style="text-align: center;">About MRT</h2>
       <p>MRT centralizes essential digital tools for Rwandans: global accounts, wallet payments, hosting, and a discovery hub — all connected and easy to use.</p>
       <div class="grid-3" style="margin-top:20px;">
         <div class="card"><h3>Problem</h3><p>Services are fragmented with multiple logins and confusing apps. MRT centralizes essentials for a smoother digital life.</p></div>
@@ -374,7 +374,7 @@ footer{padding:24px 20px; text-align:center; font-size:14px; color:#64748B; bord
 
   <section id="ecosystem">
     <div class="container">
-      <h2>Features</h2>
+      <h2 style="text-align: center;">Features</h2>
       <div class="grid-3" style="margin-top:20px;">
         
         <div class="card card-flip" tabindex="0" role="button" aria-pressed="false">
@@ -497,14 +497,14 @@ footer{padding:24px 20px; text-align:center; font-size:14px; color:#64748B; bord
 
   <section id="hub">
     <div class="container">
-      <h2>MRT Hub</h2>
+      <h2 style="text-align: center;">MRT Hub</h2>
       <p style="margin-top:18px;">Search or browse categories in MRT Hub, filter by developer, popularity, or use-case, and install or launch in one click without downloading extra apps.</p>
     </div>
   </section>
 
   <section id="impact">
     <div class="container">
-      <h2>Impact</h2>
+      <h2 style="text-align: center;">Impact</h2>
       <div class="stats-hero">
         <div class="stat"><h3>95%</h3><p>Task Completion</p></div>
         <div class="stat"><h3>80%</h3><p>User Satisfaction</p></div>
@@ -517,10 +517,10 @@ footer{padding:24px 20px; text-align:center; font-size:14px; color:#64748B; bord
     <div class="container" style="text-align: center;">
       <h2>Contact</h2>
       <form class="contact-form" id="contact-form">
-        <input type="text" name="name" placeholder="Your Name" required style="background-color: transparent; border-color: #00E5FF; color:white">
-        <input type="email" name="email" placeholder="Email" required style="background-color: transparent; border-color: #00E5FF; color: white;">
-        <textarea name="message" placeholder="Message" required style="background-color: transparent; border-color: #00E5FF; color: white;"></textarea>
-        <button class="btn-primary" type="submit">Send</button>
+        <input type="text" name="name" placeholder="Your Name" required style="background-color: transparent; border-color: #09c748; color:white">
+        <input type="email" name="email" placeholder="Email" required style="background-color: transparent; border-color: #09c748; color: white;">
+        <textarea name="message" placeholder="Message" required style="background-color: transparent; border-color: #09c748; color: white;"></textarea>
+        <button class="btn-primary" type="submit" style="background-color: #09c748;">Send</button>
         <p id="status" style="color:var(--accent-main);"></p>
       </form>
       <p style="margin-top:12px;color:#64748B;">Our site defaults to dark mode, but you can switch to light mode using the button in the header.</p>
