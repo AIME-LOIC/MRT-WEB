@@ -1,639 +1,705 @@
-// ...existing code...
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="light">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>MRT — Made in Rwanda Technologies</title>
-<link rel="icon" href="MRT-LOGO.png">
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
-<style>
-:root{
-  --bg:#002022;            /* primary dark cyan (kept) */
-  --text:#E6EEF0;          /* light text for dark mood */
-  --accent:#7EE7A5;        /* requested light green accent (no "nano" neon) */
-  --card:#071514;          /* card background (dark) */
-  --muted:rgba(230,238,240,0.65);
-  --glass: rgba(255,255,255,0.03);
-  transition: background .25s, color .25s;
-}
-
-/* baseline */
-*{box-sizing:border-box}
-html,body{height:100%;margin:0;font-family:'Poppins',sans-serif;-webkit-font-smoothing:antialiased}
-body{
-  background: var(--bg);
-  color: var(--text);
-  overflow-y:scroll;
-}
-
-/* animated background pattern (subtle, no gradient) */
-.bg-pattern {
-  position:fixed; inset:0; z-index:0; pointer-events:none;
-  background-image:
-    radial-gradient(rgba(126,231,165,0.03) 1px, transparent 1px),
-    radial-gradient(rgba(126,231,165,0.02) 1px, transparent 1px);
-  background-size: 28px 28px, 180px 180px;
-  mix-blend-mode: overlay; opacity:0.7;
-  animation: pan 28s linear infinite;
-}
-@keyframes pan { from { transform:translateY(0) } to { transform:translateY(-30px) } }
-
-/* Preloader */
-#preloader{position:fixed; inset:0; display:flex;align-items:center;justify-content:center;background:var(--bg);z-index:9999;transition:opacity .5s,visibility .5s}
-.spinner{width:56px;height:56px;border-radius:50%;border:6px solid rgba(255,255,255,0.04);border-top-color:var(--accent);animation:spin .9s linear infinite}
-@keyframes spin{to{transform:rotate(360deg)}}
-body.loaded #preloader{opacity:0;visibility:hidden;pointer-events:none}
-
-/* Header sticky + visible on scroll */
-header{
-  position:fixed; top:0; left:0; right:0; z-index:60; display:flex; align-items:center; justify-content:space-between;
-  padding:12px 20px; transition:backdrop-filter .2s, background .18s, transform .2s;
-  background: rgba(0,0,0,0.16);
-  backdrop-filter: blur(6px);
-  border-bottom:1px solid rgba(255,255,255,0.03);
-}
-header.scrolled{ background: rgba(0,0,0,0.24); box-shadow:0 6px 30px rgba(0,0,0,0.4); }
-
-.brand{display:flex;gap:12px;align-items:center}
-.brand img{width:56px;height:56px;object-fit:cover;border-radius:10px;display:block;box-shadow:0 8px 30px rgba(126,231,165,0.03)}
-.brand .title{font-weight:800}
-.nav-links{display:flex;gap:18px;align-items:center;z-index:80}
-.nav-links a{color:var(--text);text-decoration:none;font-weight:600;padding:6px 4px;border-radius:6px;transition:color .12s,transform .12s}
-.nav-links a:hover{color:var(--accent);transform:translateY(-3px)}
-.nav-links a:focus{outline:2px solid rgba(126,231,165,0.08);outline-offset:3px}
-
-/* mobile nav */
-.nav-toggle{display:none}
-@media(max-width:920px){
-  .nav-links{position:fixed;top:72px;right:16px;flex-direction:column;background:var(--card);padding:18px;border-radius:12px;gap:12px;display:none}
-  .nav-links.nav-open{display:flex}
-  .nav-toggle{display:flex;align-items:center;gap:6px;background:transparent;border:none;color:var(--text);cursor:pointer}
-}
-
-/* header actions */
-.header-actions{display:flex;gap:10px;align-items:center}
-.btn-primary{background:var(--accent);color:#001;font-weight:700;padding:10px 16px;border-radius:12px;border:none;cursor:pointer;box-shadow:0 8px 28px rgba(126,231,165,0.06)}
-.toggle-btn{background:transparent;border:1px solid rgba(255,255,255,0.04);color:var(--text);padding:6px 10px;border-radius:9px;cursor:pointer}
-
-/* Hero - solid colors, moving text, no gradients */
-main{padding-top:84px;position:relative;z-index:10}
-.hero{width:100%;min-height:78vh;display:flex;align-items:center;justify-content:center;padding:48px 20px;position:relative;overflow:hidden;background:transparent}
-.hero .hero-inner{max-width:1100px;text-align:left;display:grid;grid-template-columns:1fr 420px;gap:30px;align-items:center}
-@media(max-width:920px){ .hero .hero-inner{grid-template-columns:1fr; text-align:center} }
-
-.hero h1{font-size:clamp(30px,6vw,64px);margin:0 0 12px;letter-spacing:-0.6px;line-height:1.02;color:var(--text)}
-.hero p.sub{color:var(--muted);max-width:740px}
-
-/* moving marquee-style tagline (accessible, CSS animation) */
-.marquee{
-  overflow:hidden; white-space:nowrap; margin-top:18px; padding:6px 0;
-  border-radius:8px; background:var(--glass); color:var(--accent); font-weight:600;
-}
-.marquee .track{display:inline-block;padding-left:100%; animation: marquee 16s linear infinite;}
-@keyframes marquee { from { transform:translateX(0) } to { transform:translateX(-50%) } }
-
-/* hero visual - subtle floating panel (no gradient) */
-.hero-visual{position:relative;background:var(--card);padding:18px;border-radius:16px;box-shadow:0 18px 60px rgba(0,0,0,0.5);height:320px;display:flex;align-items:center;justify-content:center;overflow:hidden;}
-.hero-visual .float {position:absolute;width:260px;height:260px;border-radius:12px;opacity:0.06;background:var(--accent);animation:float 8s ease-in-out infinite;}
-@keyframes float{0%{transform:translateY(0) rotate(0)}50%{transform:translateY(-12px) rotate(2deg)}100%{transform:translateY(0) rotate(0)}}
-
-/* metrics */
-.metrics{display:flex;gap:18px;margin-top:18px}
-.metric{background:var(--card);padding:12px 14px;border-radius:12px;min-width:120px;box-shadow:0 10px 40px rgba(0,0,0,0.5)}
-.metric h3{margin:0;color:var(--accent)}
-
-/* sections */
-section{padding:56px 20px}
-.container{max-width:1100px;margin:0 auto}
-
-/* reveals */
-.reveal{opacity:0;transform:translateY(14px);transition:opacity .6s ease,transform .6s ease}
-.reveal.visible{opacity:1;transform:none}
-
-/* cards & flips */
-.grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
-@media(max-width:920px){ .grid-3{grid-template-columns:1fr 1fr} }
-@media(max-width:600px){ .grid-3{grid-template-columns:1fr} }
-
-.card{background:var(--card);padding:18px;border-radius:12px;box-shadow:0 10px 40px rgba(0,0,0,0.5);min-height:160px;display:flex;flex-direction:column;justify-content:space-between}
-.card .learn{margin-top:12px;padding:8px 12px;border-radius:10px;background:transparent;border:1px solid rgba(255,255,255,0.04);color:var(--accent);cursor:pointer}
-
-/* flip */
-.card-flip{background:none;padding:0;perspective:1200px;cursor:pointer}
-.card-inner{position:relative;transition:transform .7s;transform-style:preserve-3d;min-height:220px}
-.card-inner.is-flipped{transform:rotateY(180deg)}
-.card-front,.card-back{background:var(--card);border-radius:12px;padding:18px;position:absolute;inset:0;backface-visibility:hidden;display:flex;flex-direction:column;justify-content:space-between}
-.card-back{transform:rotateY(180deg)}
-.card-flip-prompt{font-size:13px;color:var(--accent);text-align:right;font-weight:700}
-
-/* team */
-.team-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;margin-top:24px}
-@media(max-width:920px){ .team-grid{grid-template-columns:repeat(2,1fr)} }
-.team-member{background:var(--card);padding:16px;border-radius:12px;text-align:center;transition:transform .25s,box-shadow .25s}
-.team-member:hover{transform:translateY(-8px);box-shadow:0 18px 60px rgba(126,231,165,0.04)}
-.member-photo{width:96px;height:96px;border-radius:12px;object-fit:cover;margin:0 auto 12px;display:block;border:3px solid rgba(126,231,165,0.04)}
-
-/* footer */
-footer{padding:28px 20px;border-top:1px solid rgba(255,255,255,0.03);color:var(--text)}
-
-/* modal & toasts */
-.modal{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,0.6);z-index:120;opacity:0;pointer-events:none;transition:opacity .18s}
-.modal.show{opacity:1;pointer-events:auto}
-.modal .panel{background:var(--card);color:var(--text);width:92%;max-width:760px;border-radius:12px;padding:18px;box-shadow:0 24px 60px rgba(0,0,0,0.6)}
-.toast{position:fixed;right:18px;bottom:18px;background:var(--accent);color:#001;padding:12px 14px;border-radius:12px;box-shadow:0 12px 40px rgba(0,0,0,0.5);z-index:130;display:flex;gap:10px;align-items:center}
-
-/* cookie consent */
-#cookie-consent{position:fixed;left:12px;right:12px;bottom:12px;background:rgba(0,0,0,0.6);color:var(--text);padding:12px;border-radius:10px;display:flex;justify-content:space-between;gap:12px;align-items:center;z-index:140}
-#cookie-consent button{background:var(--accent);border:none;padding:8px 12px;border-radius:8px;cursor:pointer;color:#001}
-
-/* small screens refinements */
-@media(max-width:520px){
-  .hero .hero-inner{padding:0}
-  .brand img{width:48px;height:48px}
-}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MRT: Made-in Rwanda Technologies - All-in-One Digital Ecosystem</title>
+    <!-- Load Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Load Lucide Icons for better visuals -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        'mrt-primary': '#10B981', // Emerald 500
+                        'mrt-secondary': '#059669', // Emerald 600
+                        'mrt-accent': '#34D399', // Emerald 300
+                        'mrt-dark': '#064E3B', // Emerald 900
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+        
+        * { font-family: 'Inter', sans-serif; scroll-behavior: smooth; }
+        
+        /* Animation Definitions */
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(40px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        @keyframes slideInLeft {
+            from { opacity: 0; transform: translateX(-50px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+        
+        @keyframes slideInRight {
+            from { opacity: 0; transform: translateX(50px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.8; transform: scale(1.05); }
+        }
+        
+        .animate-fadeInUp { animation: fadeInUp 0.8s ease-out forwards; }
+        .animate-fadeIn { animation: fadeIn 1s ease-out forwards; }
+        .animate-slideInLeft { animation: slideInLeft 0.8s ease-out forwards; }
+        .animate-slideInRight { animation: slideInRight 0.8s ease-out forwards; }
+        .animate-float { animation: float 3s ease-in-out infinite; }
+        .animate-pulse-custom { animation: pulse 2s ease-in-out infinite; }
+        
+        .delay-100 { animation-delay: 0.1s; }
+        .delay-200 { animation-delay: 0.2s; }
+        .delay-300 { animation-delay: 0.3s; }
+        .delay-400 { animation-delay: 0.4s; }
+        .delay-500 { animation-delay: 0.5s; }
+        .delay-600 { animation-delay: 0.6s; }
+        .delay-700 { animation-delay: 0.7s; }
+        .delay-800 { animation-delay: 0.8s; }
+        
+        .opacity-0 { opacity: 0; }
+        
+        .gradient-text {
+            background: linear-gradient(135deg, #10B981 0%, #059669 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .card-hover {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .card-hover:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 20px 40px rgba(16, 185, 129, 0.2);
+        }
+        
+        .section-visible { opacity: 1 !important; transform: translateY(0) !important; transform: translateX(0) !important; }
+    </style>
 </head>
-<body>
-<div class="bg-pattern" aria-hidden="true"></div>
-<div id="preloader"><div class="spinner" role="status" aria-hidden="true"></div></div>
+<body class="bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100 transition-colors duration-300">
 
-<header id="site-header" aria-label="Main header">
-  <div class="brand">
-    <a href="/" aria-label="MRT Home"><img src="MRT-LOGO.png" alt="MRT logo"></a>
-    <div>
-      <div class="title">MRT</div>
-      <div style="font-size:12px;color:var(--accent)">Made in Rwanda Technologies</div>
+    <!-- Toast Notification -->
+    <div id="toast" class="fixed top-5 right-5 z-50 transform translate-x-[500px] transition-all duration-500"></div>
+
+    <!-- Popup Overlay -->
+    <div id="popup-overlay" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-black/70 backdrop-blur-sm">
+        <div id="popup-content" class="bg-white dark:bg-gray-800 w-full max-w-lg rounded-2xl shadow-2xl transform scale-95 transition-all duration-300"></div>
     </div>
-  </div>
 
-  <nav class="nav-links" id="main-nav" aria-label="Main navigation">
-    <a href="#about">About</a>
-    <a href="#ecosystem">Features</a>
-    <a href="#devhub">Use Cases</a>
-    <a href="#team">Team</a>
-    <a href="#contact">Contact</a>
-  </nav>
-
-  <div class="header-actions">
-    <button id="game-open" class="toggle-btn" title="Play a quick game">Play</button>
-    <button id="theme-toggle" class="toggle-btn" aria-pressed="false">Light Mode</button>
-    <button id="premium-btn" class="btn-primary">Premium</button>
-  </div>
-
-  <button class="nav-toggle" aria-label="Toggle navigation" aria-expanded="false" aria-controls="main-nav">
-    ☰
-  </button>
-</header>
-
-<main>
-  <section class="hero">
-    <div class="hero-inner hero-content reveal">
-      <div>
-        <h1>Empowering Rwanda's Tech Future.</h1>
-        <p class="sub">A premium Rwandan platform for businesses, companies and individuals — use apps without downloading them. Built local-first for scale and accessibility.</p>
-
-        <div class="marquee" aria-hidden="true">
-          <div class="track">Local-first • Offline-capable • Secure • Build for Rwanda • Scale across Africa • Proudly Made in Rwanda •</div>
+    <!-- Mobile Menu -->
+    <div id="mobile-menu" class="fixed inset-0 z-40 hidden bg-gray-900/95 backdrop-blur-lg">
+        <div class="flex flex-col items-center justify-center h-full space-y-8 text-center">
+            <a href="#home" onclick="navigateTo('home'); closeMobileMenu();" class="text-2xl font-semibold text-white hover:text-mrt-primary transition">Home</a>
+            <a href="#problem" onclick="navigateTo('problem'); closeMobileMenu();" class="text-2xl font-semibold text-white hover:text-mrt-primary transition">Problem</a>
+            <a href="#solution" onclick="navigateTo('solution'); closeMobileMenu();" class="text-2xl font-semibold text-white hover:text-mrt-primary transition">Solution</a>
+            <a href="#support" onclick="navigateTo('support'); closeMobileMenu();" class="text-2xl font-semibold text-white hover:text-mrt-primary transition">Support</a>
+            <button onclick="openWaitlistPopup(); closeMobileMenu();" class="bg-mrt-primary text-white px-8 py-3 rounded-lg font-semibold hover:bg-mrt-secondary transition">Get Started</button>
+            <button onclick="closeMobileMenu()" class="absolute top-6 right-6 text-white text-4xl">&times;</button>
         </div>
+    </div>
 
-        <div style="margin-top:18px">
-          <button class="btn-primary" onclick="scrollToId('ecosystem')">Explore Features</button>
-          <button class="toggle-btn" onclick="scrollToId('devhub')">How it helps businesses</button>
+    <!-- Navigation -->
+    <nav class="fixed top-0 w-full bg-white/90 dark:bg-gray-900/90 backdrop-blur-md shadow-md z-30 transition-all duration-300">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <!-- Logo -->
+                <div class="flex items-center space-x-2 cursor-pointer" onclick="navigateTo('home')">
+                    <div class="w-10 h-10 bg-gradient-to-br from-mrt-primary to-mrt-secondary rounded-lg flex items-center justify-center animate-pulse-custom">
+                        <span class="text-white font-bold text-xl">M</span>
+                    </div>
+                    <div>
+                        <span class="text-2xl font-bold text-mrt-primary">MRT</span>
+                        <p class="text-xs text-gray-500 dark:text-gray-400 -mt-1">Made-in Rwanda Technologies</p>
+                    </div>
+                </div>
+                
+                <!-- Desktop Menu -->
+                <div class="hidden md:flex items-center space-x-8">
+                    <a href="#home" onclick="navigateTo('home')" class="text-sm font-medium hover:text-mrt-primary transition">Home</a>
+                    <a href="#problem" onclick="navigateTo('problem')" class="text-sm font-medium hover:text-mrt-primary transition">Problem</a>
+                    <a href="#solution" onclick="navigateTo('solution')" class="text-sm font-medium hover:text-mrt-primary transition">Solution</a>
+                    <a href="#support" onclick="navigateTo('support')" class="text-sm font-medium hover:text-mrt-primary transition">Support</a>
+                    <button onclick="toggleTheme()" class="p-2 rounded-lg bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition" id="theme-toggle"></button>
+                    <button onclick="openWaitlistPopup()" class="bg-mrt-primary text-white px-6 py-2 rounded-lg font-semibold hover:bg-mrt-secondary transition transform hover:scale-105">Get Started</button>
+                </div>
+                
+                <!-- Mobile Menu Button -->
+                <div class="md:hidden flex items-center space-x-4">
+                    <button onclick="toggleTheme()" class="p-2 rounded-lg" id="theme-toggle-mobile"></button>
+                    <button onclick="toggleMobileMenu()" class="text-3xl">☰</button>
+                </div>
+            </div>
         </div>
+    </nav>
 
-        <div class="metrics" style="margin-top:22px">
-          <div class="metric"><h3 id="m-devs">0</h3><div style="font-size:12px;color:var(--accent)">Builders</div></div>
-          <div class="metric"><h3 id="m-projects">0</h3><div style="font-size:12px;color:var(--accent)">Partners</div></div>
-          <div class="metric"><h3 id="m-users">0</h3><div style="font-size:12px;color:var(--accent)">Target Users</div></div>
+    <!-- Main Content -->
+    <main id="content" class="pt-16">
+        <!-- Content will be loaded here -->
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-gray-300 py-16 mt-20">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
+                <!-- About -->
+                <div>
+                    <h4 class="text-white font-bold text-lg mb-4 flex items-center">
+                        <div class="w-8 h-8 bg-mrt-primary rounded mr-2"></div>
+                        MRT
+                    </h4>
+                    <p class="text-sm text-gray-400 leading-relaxed">Made-in Rwanda Technologies. Building the future of digital ecosystems for Africa and beyond.</p>
+                    <div class="flex space-x-4 mt-4">
+                        <a href="#" class="text-gray-400 hover:text-mrt-primary transition"><i data-lucide="twitter" class="w-5 h-5"></i></a>
+                        <a href="#" class="text-gray-400 hover:text-mrt-primary transition"><i data-lucide="linkedin" class="w-5 h-5"></i></a>
+                        <a href="#" class="text-gray-400 hover:text-mrt-primary transition"><i data-lucide="github" class="w-5 h-5"></i></a>
+                    </div>
+                </div>
+                
+                <!-- Product -->
+                <div>
+                    <h4 class="text-white font-bold mb-4">Product</h4>
+                    <ul class="space-y-2 text-sm">
+                        <li><a href="#solution" onclick="navigateTo('solution')" class="hover:text-mrt-primary transition">Features</a></li>
+                        <li><a href="#solution" onclick="navigateTo('solution')" class="hover:text-mrt-primary transition">MRT Hub</a></li>
+                        <li><a href="#solution" onclick="navigateTo('solution')" class="hover:text-mrt-primary transition">MRT Wallet</a></li>
+                        <li><a href="#solution" onclick="navigateTo('solution')" class="hover:text-mrt-primary transition">MRT Connect</a></li>
+                        <li><a href="#" onclick="openDemoPopup()" class="hover:text-mrt-primary transition">Request Demo</a></li>
+                    </ul>
+                </div>
+                
+                <!-- Company -->
+                <div>
+                    <h4 class="text-white font-bold mb-4">Company</h4>
+                    <ul class="space-y-2 text-sm">
+                        <li><a href="#home" onclick="navigateTo('home')" class="hover:text-mrt-primary transition">About 1%</a></li>
+                        <li><a href="#home" onclick="navigateTo('home')" class="hover:text-mrt-primary transition">Mission & Vision</a></li>
+                        <li><a href="#support" onclick="navigateTo('support')" class="hover:text-mrt-primary transition">Contact Us</a></li>
+                        <li><a href="#" class="hover:text-mrt-primary transition">Careers</a></li>
+                        <li><a href="#" class="hover:text-mrt-primary transition">Blog</a></li>
+                    </ul>
+                </div>
+                
+                <!-- Legal -->
+                <div>
+                    <h4 class="text-white font-bold mb-4">Legal</h4>
+                    <ul class="space-y-2 text-sm">
+                        <li><a href="#" class="hover:text-mrt-primary transition">Privacy Policy</a></li>
+                        <li><a href="#" class="hover:text-mrt-primary transition">Terms of Service</a></li>
+                        <li><a href="#" class="hover:text-mrt-primary transition">Security</a></li>
+                        <li><a href="#" class="hover:text-mrt-primary transition">Cookie Policy</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="border-t border-gray-800 pt-8 text-center">
+                <p class="text-sm text-gray-500">&copy; 2025 MRT - Made-in Rwanda Technologies. A product by <span class="text-mrt-primary font-semibold">1%</span>. All rights reserved.</p>
+                <p class="text-xs text-gray-600 mt-2">Connecting people, technology, and services into one powerful ecosystem 🇷🇼</p>
+            </div>
         </div>
-      </div>
+    </footer>
 
-      <div class="hero-visual">
-        <div class="float" style="right: -40px; top: 20px;"></div>
-        <svg width="320" height="220" viewBox="0 0 320 220" fill="none" aria-hidden="true">
-          <rect x="8" y="8" width="304" height="204" rx="14" fill="rgba(255,255,255,0.02)"/>
-          <g stroke="rgba(126,231,165,0.9)" stroke-width="1" fill="none">
-            <path d="M12 170 C 70 120, 140 200, 260 160" opacity="0.2"></path>
-            <path d="M12 140 C 90 80, 160 180, 310 120" opacity="0.32"></path>
-          </g>
-        </svg>
-      </div>
-    </div>
-  </section>
+    <script>
+        lucide.createIcons();
+        
+        let isDarkMode = localStorage.getItem('theme') === 'dark';
+        let currentSection = 'home';
+        
+        // Initialize theme
+        if (isDarkMode) {
+            document.documentElement.classList.add('dark');
+        }
+        updateThemeIcons();
+        
+        // Toast System
+        function showToast(message, type = 'success') {
+            const toast = document.getElementById('toast');
+            const bgColor = type === 'success' ? 'bg-mrt-primary' : 'bg-blue-500';
+            const icon = type === 'success' ? '✓' : 'ℹ';
+            
+            toast.innerHTML = `
+                <div class="${bgColor} text-white px-6 py-4 rounded-xl shadow-2xl flex items-center space-x-3">
+                    <span class="text-xl font-bold">${icon}</span>
+                    <span class="font-medium">${message}</span>
+                </div>
+            `;
+            
+            toast.classList.remove('translate-x-[500px]');
+            setTimeout(() => toast.classList.add('translate-x-[500px]'), 3500);
+        }
+        
+        // Popup System
+        function openPopup(content) {
+            const overlay = document.getElementById('popup-overlay');
+            const popup = document.getElementById('popup-content');
+            popup.innerHTML = content;
+            overlay.classList.remove('hidden');
+            overlay.classList.add('flex');
+            setTimeout(() => popup.classList.replace('scale-95', 'scale-100'), 10);
+            lucide.createIcons();
+        }
+        
+        function closePopup() {
+            const overlay = document.getElementById('popup-overlay');
+            const popup = document.getElementById('popup-content');
+            popup.classList.replace('scale-100', 'scale-95');
+            setTimeout(() => {
+                overlay.classList.add('hidden');
+                overlay.classList.remove('flex');
+            }, 300);
+        }
+        
+        function openWaitlistPopup() {
+            openPopup(`
+                <div class="p-8">
+                    <button onclick="closePopup()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 text-3xl">&times;</button>
+                    <div class="text-center mb-6">
+                        <div class="w-16 h-16 bg-gradient-to-br from-mrt-primary to-mrt-secondary rounded-full mx-auto mb-4 flex items-center justify-center animate-pulse-custom">
+                            <i data-lucide="rocket" class="w-8 h-8 text-white"></i>
+                        </div>
+                        <h2 class="text-3xl font-bold gradient-text mb-2">Join the Waitlist</h2>
+                        <p class="text-gray-600 dark:text-gray-300">Be among the first to experience MRT's revolutionary digital ecosystem</p>
+                    </div>
+                    <form onsubmit="submitWaitlist(event)" class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium mb-2">Full Name</label>
+                            <input type="text" required class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-mrt-primary dark:bg-gray-700 dark:text-white" placeholder="John Doe">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium mb-2">Email Address</label>
+                            <input type="email" required class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-mrt-primary dark:bg-gray-700 dark:text-white" placeholder="john@example.com">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium mb-2">I am a...</label>
+                            <select class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-mrt-primary dark:bg-gray-700 dark:text-white">
+                                <option>Developer</option>
+                                <option>Business Owner</option>
+                                <option>Individual/End User</option>
+                                <option>Organization</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="w-full bg-mrt-primary text-white py-3 rounded-lg font-semibold hover:bg-mrt-secondary transition transform hover:scale-105">Join Waitlist</button>
+                    </form>
+                </div>
+            `);
+        }
+        
+        function openDemoPopup() {
+            openPopup(`
+                <div class="p-8">
+                    <button onclick="closePopup()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 text-3xl">&times;</button>
+                    <div class="text-center mb-6">
+                        <div class="w-16 h-16 bg-gradient-to-br from-blue-500 to-blue-600 rounded-full mx-auto mb-4 flex items-center justify-center">
+                            <i data-lucide="play-circle" class="w-8 h-8 text-white"></i>
+                        </div>
+                        <h2 class="text-3xl font-bold text-blue-600 dark:text-blue-400 mb-2">Request a Demo</h2>
+                        <p class="text-gray-600 dark:text-gray-300">See MRT in action with a personalized walkthrough</p>
+                    </div>
+                    <form onsubmit="submitDemo(event)" class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium mb-2">Full Name</label>
+                            <input type="text" required class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium mb-2">Work Email</label>
+                            <input type="email" required class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium mb-2">Company/Organization</label>
+                            <input type="text" required class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white">
+                        </div>
+                        <button type="submit" class="w-full bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700 transition">Schedule Demo</button>
+                    </form>
+                </div>
+            `);
+        }
+        
+        function submitWaitlist(e) {
+            e.preventDefault();
+            closePopup();
+            showToast('Welcome aboard! We\'ll notify you when MRT launches 🚀', 'success');
+        }
+        
+        function submitDemo(e) {
+            e.preventDefault();
+            closePopup();
+            showToast('Demo request received! Our team will contact you within 24 hours 📧', 'success');
+        }
+        
+        function submitContact(e) {
+            e.preventDefault();
+            showToast('Message sent successfully! We\'ll respond within 24 hours ✉️', 'success');
+            e.target.reset();
+        }
+        
+        // Theme Toggle
+        function toggleTheme() {
+            isDarkMode = !isDarkMode;
+            document.documentElement.classList.toggle('dark');
+            localStorage.setItem('theme', isDarkMode ? 'dark' : 'light');
+            updateThemeIcons();
+        }
+        
+        function updateThemeIcons() {
+            const desktop = document.getElementById('theme-toggle');
+            const mobile = document.getElementById('theme-toggle-mobile');
+            const icon = isDarkMode ? 'sun' : 'moon';
+            desktop.innerHTML = `<i data-lucide="${icon}" class="w-5 h-5"></i>`;
+            mobile.innerHTML = `<i data-lucide="${icon}" class="w-5 h-5"></i>`;
+            lucide.createIcons();
+        }
+        
+        // Mobile Menu
+        function toggleMobileMenu() {
+            document.getElementById('mobile-menu').classList.toggle('hidden');
+        }
+        
+        function closeMobileMenu() {
+            document.getElementById('mobile-menu').classList.add('hidden');
+        }
+        
+        // Navigation
+        function navigateTo(section) {
+            currentSection = section;
+            loadSection(section);
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+        
+        function loadSection(section) {
+            const content = document.getElementById('content');
+            content.innerHTML = sections[section] || sections.home;
+            lucide.createIcons();
+            
+            // Trigger animations
+            setTimeout(() => {
+                document.querySelectorAll('.opacity-0').forEach((el, index) => {
+                    // Check for animation class to apply delay dynamically
+                    const delay = el.className.match(/delay-(\d+)/) ? parseInt(el.className.match(/delay-(\d+)/)[1]) : 0;
+                    setTimeout(() => {
+                        el.classList.add('section-visible');
+                    }, index * 100 + delay);
+                });
+            }, 100);
+        }
+        
+        // Sections Content
+        const sections = {
+            home: `
+                <!-- Hero Section -->
+                <section id="home" class="min-h-screen flex items-center justify-center bg-gradient-to-br from-mrt-primary/10 to-mrt-secondary/10 dark:from-mrt-dark/20 dark:to-mrt-secondary/20 px-4">
+                    <div class="max-w-7xl mx-auto grid md:grid-cols-2 gap-12 items-center">
+                        <div class="opacity-0 animate-fadeInUp">
+                            <div class="flex items-center space-x-2 mb-6">
+                                <div class="px-3 py-1 bg-mrt-primary/10 rounded-full flex items-center space-x-2">
+                                    <span class="w-2 h-2 bg-mrt-primary rounded-full animate-pulse-custom"></span>
+                                    <span class="text-sm font-medium text-mrt-primary">Made in Rwanda 🇷🇼</span>
+                                </div>
+                            </div>
+                            <h1 class="text-5xl md:text-6xl lg:text-7xl font-black leading-tight mb-6">
+                                <span class="gradient-text">Your Digital Life,</span><br>
+                                <span class="text-gray-900 dark:text-white">Unified & Simplified</span>
+                            </h1>
+                            <p class="text-xl text-gray-600 dark:text-gray-300 mb-8 leading-relaxed">
+                                MRT is Rwanda's all-in-one digital ecosystem connecting people, technology, and services. One platform for payments, communication, app management, and innovation—built for <strong>developers</strong>, <strong>businesses</strong>, and <strong>individuals</strong> ready for the future.
+                            </p>
+                            <div class="flex flex-col sm:flex-row gap-4">
+                                <button onclick="openWaitlistPopup()" class="bg-mrt-primary text-white px-8 py-4 rounded-lg font-semibold text-lg hover:bg-mrt-secondary transition transform hover:scale-105 shadow-xl flex items-center justify-center">
+                                    <i data-lucide="rocket" class="w-5 h-5 mr-2"></i>
+                                    Join Waitlist
+                                </button>
+                                <button onclick="openDemoPopup()" class="border-2 border-mrt-primary text-mrt-primary dark:text-mrt-accent px-8 py-4 rounded-lg font-semibold text-lg hover:bg-mrt-primary hover:text-white transition transform hover:scale-105 flex items-center justify-center">
+                                    <i data-lucide="play-circle" class="w-5 h-5 mr-2"></i>
+                                    Watch Demo
+                                </button>
+                            </div>
+                            <div class="mt-8 flex items-center space-x-6 text-sm text-gray-600 dark:text-gray-400">
+                                <div class="flex items-center">
+                                    <i data-lucide="check-circle" class="w-5 h-5 text-mrt-primary mr-2"></i>
+                                    No Credit Card Required
+                                </div>
+                                <div class="flex items-center">
+                                    <i data-lucide="shield-check" class="w-5 h-5 text-mrt-primary mr-2"></i>
+                                    100% Secure
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="opacity-0 animate-fadeInUp delay-300 relative">
+                            <div class="relative animate-float">
+                                <div class="absolute inset-0 bg-gradient-to-br from-mrt-primary to-mrt-secondary rounded-3xl blur-3xl opacity-20"></div>
+                                <div class="relative bg-white dark:bg-gray-800 p-8 rounded-3xl shadow-2xl">
+                                    <div class="grid grid-cols-2 gap-4">
+                                        <div class="bg-gradient-to-br from-mrt-primary to-mrt-secondary p-6 rounded-2xl text-white">
+                                            <i data-lucide="wallet" class="w-10 h-10 mb-3"></i>
+                                            <h3 class="font-bold text-lg">MRT Wallet</h3>
+                                            <p class="text-sm text-white/80 mt-2">Unified payment system</p>
+                                        </div>
+                                        <div class="bg-gradient-to-br from-blue-500 to-blue-600 p-6 rounded-2xl text-white">
+                                            <i data-lucide="users" class="w-10 h-10 mb-3"></i>
+                                            <h3 class="font-bold text-lg">MRT Connect</h3>
+                                            <p class="text-sm text-white/80 mt-2">Seamless collaboration</p>
+                                        </div>
+                                        <div class="bg-gradient-to-br from-purple-500 to-purple-600 p-6 rounded-2xl text-white">
+                                            <i data-lucide="code" class="w-10 h-10 mb-3"></i>
+                                            <h3 class="font-bold text-lg">MRT x</h3>
+                                            <p class="text-sm text-white/80 mt-2">Developer platform</p>
+                                        </div>
+                                        <div class="bg-gradient-to-br from-orange-500 to-orange-600 p-6 rounded-2xl text-white">
+                                            <i data-lucide="box" class="w-10 h-10 mb-3"></i>
+                                            <h3 class="font-bold text-lg">MRT Hub</h3>
+                                            <p class="text-sm text-white/80 mt-2">Central ecosystem</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                
+                <!-- Background Story (Fixed and Completed Section) -->
+                <section class="py-20 px-4 bg-white dark:bg-gray-800">
+                    <div class="max-w-6xl mx-auto">
+                        <div class="text-center mb-16 opacity-0 animate-fadeInUp">
+                            <h2 class="text-4xl md:text-5xl font-bold gradient-text mb-4">The Story Behind MRT</h2>
+                            <p class="text-xl text-gray-600 dark:text-gray-300">Born from Rwanda's vision for digital transformation</p>
+                        </div>
+                        
+                        <div class="grid md:grid-cols-2 gap-12">
+                            <div class="opacity-0 animate-slideInLeft delay-200">
+                                <div class="bg-gradient-to-br from-mrt-primary/10 to-mrt-secondary/10 p-8 rounded-2xl card-hover">
+                                    <div class="w-16 h-16 bg-mrt-primary rounded-xl flex items-center justify-center mb-6">
+                                        <i data-lucide="lightbulb" class="w-8 h-8 text-white"></i>
+                                    </div>
+                                    <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-4">The Digital Mandate</h3>
+                                    <p class="text-gray-700 dark:text-gray-300 leading-relaxed">
+                                        MRT was conceived to address the fragmentation and complexity in the digital landscape. We saw too many disparate systems for payments, security, and app management. Our goal is simple: create a **unified, reliable digital layer** for all Rwandans and the continent.
+                                    </p>
+                                </div>
+                            </div>
+                            
+                            <div class="opacity-0 animate-slideInRight delay-400">
+                                <div class="bg-white dark:bg-gray-800 p-8 rounded-2xl shadow-lg border border-gray-100 dark:border-gray-700 card-hover">
+                                    <div class="w-16 h-16 bg-blue-500 rounded-xl flex items-center justify-center mb-6">
+                                        <i data-lucide="gem" class="w-8 h-8 text-white"></i>
+                                    </div>
+                                    <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-4">Powered by 1%</h3>
+                                    <p class="text-gray-700 dark:text-gray-300 leading-relaxed">
+                                        Developed by the **'1% collective,'** we prioritize quality, performance, and security. We integrate advanced technologies like **Blockchain** for transactional integrity and simple **AI** for user customization, ensuring the MRT ecosystem is robust and future-proof.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            `,
+            problem: `
+                <!-- Problem Section -->
+                <section class="py-20 px-4">
+                    <div class="max-w-6xl mx-auto">
+                        <div class="text-center mb-16 opacity-0 animate-fadeInUp">
+                            <p class="text-lg font-semibold text-mrt-primary mb-2">The Current Landscape</p>
+                            <h2 class="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-4">The Digital Fragmentation Problem</h2>
+                            <p class="text-xl text-gray-600 dark:text-gray-300">We identified three core issues that hinder digital progress for users and businesses.</p>
+                        </div>
 
-  <section id="about" class="reveal container">
-    <h2 style="text-align:center">About MRT</h2>
-    <p style="text-align:center;color:var(--accent)">Local-first. Accessible. Ready for businesses and individuals.</p>
+                        <div class="grid md:grid-cols-3 gap-8">
+                            
+                            <!-- Issue 1: Account & Identity Overload -->
+                            <div class="bg-white dark:bg-gray-800 p-8 rounded-2xl shadow-xl card-hover opacity-0 animate-fadeInUp delay-200">
+                                <i data-lucide="log-out" class="w-12 h-12 text-red-500 mb-4"></i>
+                                <h3 class="text-2xl font-bold mb-3">Identity Fatigue</h3>
+                                <p class="text-gray-600 dark:text-gray-300 leading-relaxed">
+                                    Users must create dozens of separate accounts for different services, leading to **password overload** and security risks. Managing multiple identities is tedious and unnecessary.
+                                </p>
+                            </div>
+                            
+                            <!-- Issue 2: Payment Complexity -->
+                            <div class="bg-white dark:bg-gray-800 p-8 rounded-2xl shadow-xl card-hover opacity-0 animate-fadeInUp delay-400">
+                                <i data-lucide="credit-card" class="w-12 h-12 text-yellow-500 mb-4"></i>
+                                <h3 class="text-2xl font-bold mb-3">Inconsistent Payments</h3>
+                                <p class="text-gray-600 dark:text-gray-300 leading-relaxed">
+                                    The lack of a unified digital wallet forces users to juggle different banking, mobile money (Momo), and card payment methods just to access diverse services.
+                                </p>
+                            </div>
 
-    <div style="margin-top:18px" class="grid-3">
-      <div class="card reveal"><h3>Problem</h3><p>Apps are fragmented — multiple downloads, multiple logins, wasted storage and time.</p></div>
-      <div class="card reveal"><h3>Mission</h3><p>Provide a connected platform that reduces friction for users and empowers local builders and companies to reach customers.</p></div>
-      <div class="card reveal"><h3>Vision</h3><p>Enable businesses and individuals to access robust apps instantly — no installs needed.</p></div>
-    </div>
+                            <!-- Issue 3: Disconnected Services -->
+                            <div class="bg-white dark:bg-gray-800 p-8 rounded-2xl shadow-xl card-hover opacity-0 animate-fadeInUp delay-600">
+                                <i data-lucide="box-select" class="w-12 h-12 text-blue-500 mb-4"></i>
+                                <h3 class="text-2xl font-bold mb-3">Fragmented Access</h3>
+                                <p class="text-gray-600 dark:text-gray-300 leading-relaxed">
+                                    Developers and consumers lack a central ecosystem (Hub) to find, deploy, or manage solutions efficiently, stifling local innovation and collaboration.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            `,
+            solution: `
+                <!-- Solution Section -->
+                <section class="py-20 px-4 bg-gradient-to-br from-mrt-primary/10 to-mrt-secondary/10 dark:from-gray-900 dark:to-gray-800">
+                    <div class="max-w-7xl mx-auto">
+                        <div class="text-center mb-16 opacity-0 animate-fadeInUp">
+                            <p class="text-lg font-semibold text-mrt-primary mb-2">The MRT Difference</p>
+                            <h2 class="text-4xl md:text-5xl font-bold gradient-text mb-4">Introducing MRT: The All-in-One Solution</h2>
+                            <p class="text-xl text-gray-600 dark:text-gray-300">MRT consolidates core services into four powerful, secure pillars.</p>
+                        </div>
 
-    <div class="roadmap reveal" style="margin-top:22px">
-      <div class="road-step"><div class="badge">1</div><div><strong>Foundation</strong><div class="text-muted">Hub & Wallet</div></div></div>
-      <div class="road-step"><div class="badge">2</div><div><strong>Growth</strong><div class="text-muted">Onboard partners & companies</div></div></div>
-      <div class="road-step"><div class="badge">3</div><div><strong>Scale</strong><div class="text-muted">Reach millions across Rwanda & Africa</div></div></div>
-    </div>
-  </section>
+                        <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+                            
+                            <!-- Feature 1: MRT Global Account -->
+                            <div class="card-hover p-6 bg-white dark:bg-gray-800 rounded-2xl shadow-xl border-t-4 border-mrt-primary opacity-0 animate-fadeInUp delay-100">
+                                <i data-lucide="user-check" class="w-8 h-8 text-mrt-primary mb-4"></i>
+                                <h3 class="text-xl font-bold mb-2">1. Global Account</h3>
+                                <p class="text-sm text-gray-600 dark:text-gray-300">
+                                    One single, universal account for all MRT-integrated services. Create once, use everywhere. Your digital passport.
+                                </p>
+                            </div>
 
-  <section id="ecosystem" class="container reveal">
-    <h2 style="text-align:center">Features</h2>
-    <p style="text-align:center;color:var(--accent)">Instant apps, offline-first capabilities, integrated payments and secure sign-on — aimed at businesses, companies and individuals.</p>
+                            <!-- Feature 2: Passwordless Security -->
+                            <div class="card-hover p-6 bg-white dark:bg-gray-800 rounded-2xl shadow-xl border-t-4 border-blue-500 opacity-0 animate-fadeInUp delay-300">
+                                <i data-lucide="fingerprint" class="w-8 h-8 text-blue-500 mb-4"></i>
+                                <h3 class="text-xl font-bold mb-2">2. Passwordless</h3>
+                                <p class="text-sm text-gray-600 dark:text-gray-300">
+                                    Leverage your device's biometrics (Fingerprint, Face ID, PIN) for secure, seamless login. **Your device is your security.**
+                                </p>
+                            </div>
+                            
+                            <!-- Feature 3: MRT Hub -->
+                            <div class="card-hover p-6 bg-white dark:bg-gray-800 rounded-2xl shadow-xl border-t-4 border-purple-500 opacity-0 animate-fadeInUp delay-500">
+                                <i data-lucide="layout-grid" class="w-8 h-8 text-purple-500 mb-4"></i>
+                                <h3 class="text-xl font-bold mb-2">3. MRT Hub</h3>
+                                <p class="text-sm text-gray-600 dark:text-gray-300">
+                                    The central ecosystem to find, create, and manage digital solutions, with tailored dashboards for Developers and Consumers.
+                                </p>
+                            </div>
 
-    <div class="grid-3" style="margin-top:20px">
-      <div class="card card-flip reveal" tabindex="0" role="button" aria-pressed="false">
-        <div class="card-inner">
-          <div class="card-front">
-            <div><h3>Instant Apps</h3><p>Open lightweight apps instantly without full downloads. Great for customers with limited storage.</p></div>
-            <div class="card-flip-prompt">Click to learn more</div>
-          </div>
-          <div class="card-back">
-            <div><h3>Instant Apps Details</h3><p>Fast load, small cache, and easy updates — designed to reduce friction for users and businesses.</p></div>
-            <div class="card-flip-prompt">Click to return</div>
-          </div>
-        </div>
-      </div>
+                            <!-- Feature 4: MRT Wallet -->
+                            <div class="card-hover p-6 bg-white dark:bg-gray-800 rounded-2xl shadow-xl border-t-4 border-orange-500 opacity-0 animate-fadeInUp delay-700">
+                                <i data-lucide="wallet" class="w-8 h-8 text-orange-500 mb-4"></i>
+                                <h3 class="text-xl font-bold mb-2">4. Universal Wallet</h3>
+                                <p class="text-sm text-gray-600 dark:text-gray-300">
+                                    Deposit funds via any method (Momo, Bank) and use your balance to pay services or withdraw funds seamlessly.
+                                </p>
+                            </div>
+                        </div>
 
-      <div class="card card-flip reveal" tabindex="0" role="button" aria-pressed="false">
-        <div class="card-inner">
-          <div class="card-front"><div><h3>Offline-first</h3><p>Sync when online, work offline for key features — ideal for remote and low-bandwidth areas.</p></div><div class="card-flip-prompt">Click to learn more</div></div>
-          <div class="card-back"><div><h3>Offline Details</h3><p>Local caching, background sync and delta updates to keep apps responsive with poor connectivity.</p></div><div class="card-flip-prompt">Click to return</div></div>
-        </div>
-      </div>
+                        <!-- V2 Feature Summary -->
+                        <div class="mt-20 p-8 bg-white dark:bg-gray-800 rounded-2xl shadow-2xl opacity-0 animate-fadeInUp delay-800">
+                            <h3 class="text-2xl font-bold gradient-text mb-4 flex items-center">
+                                <i data-lucide="trending-up" class="w-6 h-6 mr-3 text-mrt-primary"></i>
+                                V2 Roadmap: Simplicity & Customization
+                            </h3>
+                            <ul class="grid md:grid-cols-2 gap-4 text-gray-600 dark:text-gray-300 list-none">
+                                <li class="flex items-start">
+                                    <i data-lucide="command" class="w-5 h-5 text-mrt-primary mt-1 mr-3 flex-shrink-0"></i>
+                                    **MRT CLI Version:** A Command Line Interface for power users who prefer keyboard navigation and faster execution.
+                                </li>
+                                <li class="flex items-start">
+                                    <i data-lucide="wrench" class="w-5 h-5 text-mrt-primary mt-1 mr-3 flex-shrink-0"></i>
+                                    **Customizable Apps:** Simple AI will help you arrange your interface and customize apps exactly as you want them.
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </section>
+            `,
+            support: `
+                <!-- Support Section -->
+                <section class="py-20 px-4">
+                    <div class="max-w-4xl mx-auto">
+                        <div class="text-center mb-16 opacity-0 animate-fadeInUp">
+                            <p class="text-lg font-semibold text-mrt-primary mb-2">We're Here to Help</p>
+                            <h2 class="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-4">Get in Touch with the MRT Team</h2>
+                            <p class="text-xl text-gray-600 dark:text-gray-300">Whether you're a developer or a business, we're ready to answer your questions.</p>
+                        </div>
 
-      <div class="card card-flip reveal" tabindex="0" role="button" aria-pressed="false">
-        <div class="card-inner">
-          <div class="card-front"><div><h3>Payments & Wallet</h3><p>Integrate local payments and subscriptions with built-in wallet support.</p></div><div class="card-flip-prompt">Click to learn more</div></div>
-          <div class="card-back"><div><h3>Payments Details</h3><p>Mobile-money integration, invoices and merchant dashboards for businesses.</p></div><div class="card-flip-prompt">Click to return</div></div>
-        </div>
-      </div>
-    </div>
-  </section>
+                        <div class="grid md:grid-cols-2 gap-8">
+                            <!-- Contact Form -->
+                            <div class="bg-white dark:bg-gray-800 p-8 rounded-2xl shadow-xl opacity-0 animate-slideInLeft delay-200">
+                                <h3 class="text-2xl font-bold mb-6 text-mrt-primary">Send Us a Message</h3>
+                                <form onsubmit="submitContact(event)" class="space-y-4">
+                                    <div>
+                                        <label for="name" class="block text-sm font-medium mb-2">Name</label>
+                                        <input type="text" id="name" required class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-mrt-primary dark:bg-gray-700 dark:text-white">
+                                    </div>
+                                    <div>
+                                        <label for="email" class="block text-sm font-medium mb-2">Email</label>
+                                        <input type="email" id="email" required class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-mrt-primary dark:bg-gray-700 dark:text-white">
+                                    </div>
+                                    <div>
+                                        <label for="message" class="block text-sm font-medium mb-2">Message</label>
+                                        <textarea id="message" rows="4" required class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-mrt-primary dark:bg-gray-700 dark:text-white"></textarea>
+                                    </div>
+                                    <button type="submit" class="w-full bg-mrt-primary text-white py-3 rounded-lg font-semibold hover:bg-mrt-secondary transition transform hover:scale-105">Submit Inquiry</button>
+                                </form>
+                            </div>
 
-  <section id="devhub" class="container reveal">
-    <h2 style="text-align:center">How MRT Helps</h2>
-    <p style="text-align:center;color:var(--accent)">Companies, small businesses and individuals can deploy services, accept payments and reach users instantly.</p>
-    <div style="display:flex;gap:16px;flex-wrap:wrap;justify-content:center;margin-top:18px">
-      <div class="card" style="min-width:280px"><h3>For Businesses</h3><p>Publish customer-facing apps instantly without asking users to install.</p></div>
-      <div class="card" style="min-width:280px"><h3>For Companies</h3><p>Enterprise integrations, dashboards and merchant tools tailored for local payment providers.</p></div>
-      <div class="card" style="min-width:280px"><h3>For Individuals</h3><p>Discover and use apps quickly — low storage, low data usage and offline features.</p></div>
-    </div>
-  </section>
+                            <!-- Contact Info / Resources -->
+                            <div class="bg-gray-100 dark:bg-gray-700 p-8 rounded-2xl shadow-xl space-y-8 opacity-0 animate-slideInRight delay-400">
+                                <h3 class="text-2xl font-bold text-gray-900 dark:text-white">Contact Information</h3>
+                                <div class="space-y-4">
+                                    <div class="flex items-center space-x-4">
+                                        <i data-lucide="mail" class="w-6 h-6 text-mrt-primary"></i>
+                                        <p class="font-medium">support@mrt-rw.com</p>
+                                    </div>
+                                    <div class="flex items-center space-x-4">
+                                        <i data-lucide="map-pin" class="w-6 h-6 text-mrt-primary"></i>
+                                        <p class="font-medium">Kigali, Rwanda</p>
+                                    </div>
+                                </div>
 
-  <section id="team" class="container reveal">
-    <h2 style="text-align:center">Team</h2>
-    <p style="text-align:center;color:var(--accent)">Engineers, designers and operators building MRT.</p>
-    <div class="team-grid">
-      <div class="team-member reveal">
-        <img class="member-photo" src="MRT-LOGO.png" alt="Aime">
-        <div style="font-weight:700">Aime (Founder)</div>
-        <div style="font-size:13px;color:var(--accent)">Product & Vision</div>
-      </div>
-      <div class="team-member reveal">
-        <img class="member-photo" src="MRT-LOGO.png" alt="Claire">
-        <div style="font-weight:700">Claire</div>
-        <div style="font-size:13px;color:var(--accent)">Engineering</div>
-      </div>
-      <div class="team-member reveal">
-        <img class="member-photo" src="MRT-LOGO.png" alt="Ibra">
-        <div style="font-weight:700">Ibra</div>
-        <div style="font-size:13px;color:var(--accent)">DevOps</div>
-      </div>
-      <div class="team-member reveal">
-        <img class="member-photo" src="MRT-LOGO.png" alt="Nadine">
-        <div style="font-weight:700">Nadine</div>
-        <div style="font-size:13px;color:var(--accent)">Design & UX</div>
-      </div>
-    </div>
-  </section>
+                                <div class="pt-6 border-t border-gray-300 dark:border-gray-600">
+                                    <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-4">Quick Resources</h3>
+                                    <a href="#" class="flex items-center space-x-2 text-mrt-primary hover:text-mrt-secondary font-semibold transition">
+                                        <i data-lucide="help-circle" class="w-5 h-5"></i>
+                                        <span>Visit our Knowledge Base & FAQ</span>
+                                    </a>
+                                    <a href="#" class="mt-2 flex items-center space-x-2 text-mrt-primary hover:text-mrt-secondary font-semibold transition">
+                                        <i data-lucide="file-text" class="w-5 h-5"></i>
+                                        <span>Read the Developer API Docs</span>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            `,
+        };
+        
+        // Initial load
+        window.onload = () => {
+            loadSection('home');
+        };
 
-  <section id="partners" class="container reveal">
-    <h2 style="text-align:center">Partners & Sponsors</h2>
-    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:18px">
-      <div class="card">Rwanda ICT</div>
-      <div class="card">Local University</div>
-      <div class="card">Startup Fund</div>
-      <div class="card">Industry Partner</div>
-    </div>
-  </section>
+        // Click handler for popup background
+        document.getElementById('popup-overlay').addEventListener('click', (e) => {
+            if (e.target.id === 'popup-overlay') {
+                closePopup();
+            }
+        });
 
-  <section id="impact" class="container reveal">
-    <h2 style="text-align:center">Impact</h2>
-    <div class="metrics" style="justify-content:center;margin-top:18px">
-      <div class="metric"><h3>95%</h3><div style="font-size:12px;color:var(--accent)">Task Completion</div></div>
-      <div class="metric"><h3>80%</h3><div style="font-size:12px;color:var(--accent)">User Satisfaction</div></div>
-      <div class="metric"><h3>50+</h3><div style="font-size:12px;color:var(--accent)">SMEs Supported</div></div>
-    </div>
-  </section>
-
-  <section id="contact" class="container reveal" style="text-align:center">
-    <h2>Contact</h2>
-    <form class="contact-form" id="contact-form" style="margin-top:18px">
-      <input type="text" name="name" placeholder="Your Name" required style="background:transparent;border:1px solid rgba(126,231,165,0.06);border-radius:9px;padding:10px;color:var(--text)">
-      <input type="email" name="email" placeholder="Email" required style="background:transparent;border:1px solid rgba(126,231,165,0.06);border-radius:9px;padding:10px;color:var(--text)">
-      <textarea name="message" placeholder="Message" required style="background:transparent;border:1px solid rgba(126,231,165,0.06);border-radius:9px;padding:10px;color:var(--text)"></textarea>
-      <div style="margin-top:10px"><button class="btn-primary" type="submit">Send</button></div>
-      <p id="status" style="color:var(--accent)"></p>
-    </form>
-    <p style="margin-top:12px;color:var(--accent)">Email: <a href="mailto:contact@mrt.rw" style="color:var(--accent)">contact@mrt.rw</a></p>
-  </section>
-</main>
-
-<footer>
-  <div class="container" style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap">
-    <div style="display:flex;gap:12px;align-items:center">
-      <img src="MRT-LOGO.png" alt="MRT" style="width:40px;height:40px;border-radius:8px">
-      <div><strong>MRT</strong><div style="font-size:13px;color:var(--accent)">Made in Rwanda Technologies</div></div>
-    </div>
-    <div style="display:flex;gap:12px;align-items:center">
-      <a href="#about" style="color:var(--text)">About</a>
-      <a href="#contact" style="color:var(--text)">Contact</a>
-      <a href="#" style="color:var(--text)">Terms</a>
-    </div>
-  </div>
-  <div style="text-align:center;margin-top:12px;color:rgba(230,238,240,0.6)">Made with ♥ in Rwanda — © <span id="year">2025</span></div>
-</footer>
-
-<!-- modals & toast -->
-<div id="generic-modal" class="modal" aria-hidden="true">
-  <div class="panel" role="dialog" aria-modal="true">
-    <div id="generic-modal-title" style="font-weight:800"></div>
-    <div id="generic-modal-body" style="margin-top:12px;color:var(--text)"></div>
-    <div style="margin-top:14px;text-align:right">
-      <button onclick="closeGenericModal()" style="background:transparent;border:1px solid rgba(255,255,255,0.06);padding:8px 12px;border-radius:8px;margin-right:8px">Close</button>
-      <button id="generic-modal-action" class="btn-primary" onclick="closeGenericModal()">OK</button>
-    </div>
-  </div>
-</div>
-
-<div id="game-modal" class="modal" aria-hidden="true">
-  <div class="panel" role="dialog" aria-modal="true" style="max-width:980px">
-    <div style="display:flex;justify-content:space-between;align-items:center">
-      <h3 id="game-title" style="margin:0">Play while you wait — Catch the Stars</h3>
-      <div style="display:flex;gap:8px;align-items:center">
-        <button id="restart-game" style="background:transparent;border:1px solid var(--accent);padding:6px;border-radius:8px;color:var(--accent);cursor:pointer">Restart</button>
-        <button id="close-game" style="background:none;border:none;font-size:20px;cursor:pointer">✕</button>
-      </div>
-    </div>
-
-    <div style="display:flex;gap:12px;align-items:flex-start;flex-wrap:wrap;margin-top:12px">
-      <div style="flex:1;min-width:300px">
-        <canvas id="gameCanvas" class="game-canvas" width="720" height="360" style="width:100%;height:260px;display:block;background:#001214;border-radius:8px"></canvas>
-        <div style="display:flex;justify-content:space-between;margin-top:10px">
-          <div style="color:var(--accent)">Score: <span id="game-score">0</span></div>
-          <div style="color:var(--accent)">Lives: <span id="game-lives">3</span></div>
-        </div>
-      </div>
-      <div style="width:260px;min-width:230px">
-        <p style="color:var(--accent)"><strong>How to play</strong></p>
-        <p style="margin-top:6px">Click the glowing stars before they fall. Earn points and survive — great for short waits on slow connections.</p>
-        <p style="margin-top:8px"><em>Tip:</em> Bigger stars = more points. Avoid gray rocks (they cost a life).</p>
-        <div style="margin-top:12px"><button id="play-now" class="btn-primary">Start Playing</button></div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<div id="cookie-consent" style="display:none" role="dialog" aria-live="polite">
-  <div style="color:var(--text)">We use cookies to improve your experience. By continuing you agree to our use of cookies.</div>
-  <div style="display:flex;gap:8px">
-    <button id="accept-cookies">Accept</button>
-    <button id="dismiss-cookies" style="background:transparent;border:1px solid rgba(255,255,255,0.06);color:var(--text);padding:8px 12px;border-radius:8px">Dismiss</button>
-  </div>
-</div>
-
-<script>
-/* PRELOADER */
-window.addEventListener('load', () => { document.body.classList.add('loaded'); });
-
-/* THEME: default dark, toggle persist */
-(function initTheme(){
-  const saved = localStorage.getItem('mrt-theme');
-  const theme = saved || 'dark';
-  document.documentElement.setAttribute('data-theme', theme);
-  document.getElementById('theme-toggle').textContent = theme === 'dark' ? 'Light Mode' : 'Dark Mode';
-})();
-document.getElementById('theme-toggle').addEventListener('click', () => {
-  const current = document.documentElement.getAttribute('data-theme') || 'dark';
-  const next = current === 'dark' ? 'light' : 'dark';
-  document.documentElement.setAttribute('data-theme', next);
-  localStorage.setItem('mrt-theme', next);
-  document.getElementById('theme-toggle').textContent = next === 'dark' ? 'Light Mode' : 'Dark Mode';
-});
-
-/* HEADER: add scrolled class when page moves */
-const header = document.getElementById('site-header');
-window.addEventListener('scroll', () => {
-  const y = window.scrollY;
-  if (y > 24) header.classList.add('scrolled'); else header.classList.remove('scrolled');
-});
-
-/* NAV TOGGLE for mobile */
-const navToggle = document.querySelector('.nav-toggle');
-const navLinks = document.getElementById('main-nav');
-if(navToggle){
-  navToggle.addEventListener('click', ()=>{
-    navLinks.classList.toggle('nav-open');
-    navToggle.setAttribute('aria-expanded', navLinks.classList.contains('nav-open'));
-  });
-  navLinks.querySelectorAll('a').forEach(a => a.addEventListener('click', ()=>{ navLinks.classList.remove('nav-open'); navToggle.setAttribute('aria-expanded', false); }));
-}
-
-/* SCROLL helper */
-function scrollToId(id){ const el = document.getElementById(id); if(el) el.scrollIntoView({behavior:'smooth', block:'start'}); }
-
-/* REVEAL ON SCROLL */
-const reveals = document.querySelectorAll('.reveal');
-const io = new IntersectionObserver((entries)=>{
-  entries.forEach(e=>{
-    if(e.isIntersecting) e.target.classList.add('visible');
-  });
-},{threshold:0.12});
-reveals.forEach(r=>io.observe(r));
-
-/* METRICS */
-function animateCount(el, to, duration=1200){
-  const start = 0, t0 = performance.now();
-  (function tick(now){
-    const t = Math.min(1,(now - t0)/duration);
-    el.textContent = Math.floor(start + (to - start) * t).toLocaleString();
-    if(t < 1) requestAnimationFrame(tick);
-  })(performance.now());
-}
-document.addEventListener('DOMContentLoaded', ()=>{
-  animateCount(document.getElementById('m-devs'), 120);
-  animateCount(document.getElementById('m-projects'), 48);
-  animateCount(document.getElementById('m-users'), 150000);
-  document.getElementById('year').textContent = new Date().getFullYear();
-});
-
-/* CARD FLIP */
-document.querySelectorAll('.card-flip').forEach(card=>{
-  const inner = card.querySelector('.card-inner');
-  card.addEventListener('click', e=>{
-    if(e.target.closest('button,a')) return;
-    inner.classList.toggle('is-flipped');
-    card.setAttribute('aria-pressed', inner.classList.contains('is-flipped'));
-  });
-  card.addEventListener('keydown', e=>{
-    if(e.key === 'Enter' || e.key === ' ') { e.preventDefault(); inner.classList.toggle('is-flipped'); }
-  });
-});
-
-/* GENERIC MODAL (replaces alerts) */
-function openGenericModal(title, html, actionLabel, actionCb){
-  const modal = document.getElementById('generic-modal');
-  document.getElementById('generic-modal-title').textContent = title || '';
-  document.getElementById('generic-modal-body').innerHTML = html || '';
-  const actionBtn = document.getElementById('generic-modal-action');
-  actionBtn.textContent = actionLabel || 'OK';
-  actionBtn.onclick = function(){
-    if(typeof actionCb === 'function') actionCb();
-    closeGenericModal();
-  };
-  modal.classList.add('show'); modal.setAttribute('aria-hidden','false');
-}
-function closeGenericModal(){ const modal = document.getElementById('generic-modal'); modal.classList.remove('show'); modal.setAttribute('aria-hidden','true'); }
-
-/* PREMIUM modal */
-document.getElementById('premium-btn').addEventListener('click', ()=>{
-  openGenericModal('MRT Premium Plans',
-    `<p style="color:var(--accent)">Unlock Hub / Ecosystem features and priority support.</p>
-     <div style="display:flex;gap:12px;margin-top:12px">
-       <div style="flex:1;padding:12px;border-radius:10px;background:var(--card)"><h4>MRT Hub</h4><div style="color:var(--accent)">$10/month</div></div>
-       <div style="flex:1;padding:12px;border-radius:10px;background:var(--card)"><h4>MRT Ecosystem</h4><div style="color:var(--accent)">$15/month</div></div>
-       <div style="flex:1;padding:12px;border-radius:10px;background:var(--card)"><h4>Bundle</h4><div style="color:var(--accent)">$22/month</div></div>
-     </div>`,
-    'Start checkout',
-    ()=>{ openGenericModal('Checkout (demo)','<p>Server checkout required (integrate Stripe / M-Pesa).</p>','Close'); }
-  );
-});
-
-/* CONTACT FORM - POST to Formspree (status inline) */
-const contactForm = document.getElementById('contact-form');
-if(contactForm){
-  contactForm.addEventListener('submit', async (e)=>{
-    e.preventDefault();
-    const status = document.getElementById('status');
-    status.textContent = 'Sending...';
-    const data = new FormData(contactForm);
-    try{
-      const res = await fetch('https://formspree.io/f/xdkpgrrb', { method:'POST', body:data, headers:{'Accept':'application/json'} });
-      if(res.ok){ status.textContent='Thanks — we will reply soon.'; contactForm.reset(); }
-      else { const j = await res.json().catch(()=>{}); status.textContent = (j && j.error) ? j.error : 'Error sending message'; }
-    }catch(err){ status.textContent='Network error. Try again later.'; }
-  });
-}
-
-/* COOKIE CONSENT */
-const cookieBar = document.getElementById('cookie-consent');
-if(!localStorage.getItem('mrt-cookies')) cookieBar.style.display = 'flex';
-document.getElementById('accept-cookies').addEventListener('click', ()=>{
-  localStorage.setItem('mrt-cookies','accepted'); cookieBar.style.display = 'none';
-});
-document.getElementById('dismiss-cookies').addEventListener('click', ()=>{ cookieBar.style.display = 'none'; });
-
-/* MINI-GAME adjustments: kept hidden, show toast on slow connections */
-let game = { ctx: null, w:720, h:360, stars:[], running:false, score:0, lives:3, spawnRate:900, lastSpawn:0 };
-function startGame(){
-  const canvas = document.getElementById('gameCanvas');
-  if(!canvas) return;
-  const dpr = window.devicePixelRatio || 1;
-  game.ctx = canvas.getContext('2d');
-  game.w = canvas.width = canvas.clientWidth * dpr;
-  game.h = canvas.height = canvas.clientHeight * dpr;
-  canvas.style.width = canvas.clientWidth + 'px';
-  canvas.style.height = canvas.clientHeight + 'px';
-  game.stars=[]; game.score=0; game.lives=3; game.running=true; game.spawnRate = 900; game.lastSpawn = performance.now();
-  document.getElementById('game-score').textContent = '0'; document.getElementById('game-lives').textContent = '3';
-  requestAnimationFrame(loop);
-}
-function loop(ts){
-  if(!game.running) return;
-  const ctx = game.ctx; ctx.clearRect(0,0,game.w,game.h);
-  if(ts - game.lastSpawn > game.spawnRate){ spawnObject(); game.lastSpawn = ts; if(game.spawnRate > 380) game.spawnRate *= 0.985; }
-  for(let i=game.stars.length-1;i>=0;i--){
-    const s = game.stars[i]; s.y += s.v;
-    const grad = ctx.createRadialGradient(s.x, s.y, 0, s.x, s.y, s.r*3);
-    grad.addColorStop(0, s.color); grad.addColorStop(1, 'rgba(0,0,0,0)');
-    ctx.fillStyle = grad; ctx.beginPath(); ctx.arc(s.x, s.y, s.r,0,Math.PI*2); ctx.fill();
-    if(s.y - s.r > game.h){ if(!s.clicked && !s.safe){ game.lives--; document.getElementById('game-lives').textContent = game.lives; } game.stars.splice(i,1); }
-  }
-  if(game.lives <= 0){ endGame(); return; }
-  requestAnimationFrame(loop);
-}
-function spawnObject(){
-  const w = game.w; const size = Math.random()*16 + 8; const x = Math.random()*(w - size*2) + size;
-  const colorType = Math.random(); let color='rgba(126,231,165,0.95)'; let safe=true;
-  if(colorType > 0.84){ color='rgba(255,200,80,0.95)'; }
-  if(colorType < 0.08){ color='rgba(150,150,150,0.95)'; safe=false; }
-  game.stars.push({x, y:-20, r:size, v: Math.random()*1.8 + 0.6, color, clicked:false, safe});
-}
-document.getElementById('gameCanvas').addEventListener('pointerdown', (ev)=>{
-  if(!game.running) return;
-  const rect = ev.target.getBoundingClientRect(); const scaleX = game.w / rect.width;
-  const mx = (ev.clientX - rect.left) * scaleX, my = (ev.clientY - rect.top) * (game.h/rect.height);
-  for(let i=game.stars.length-1;i>=0;i--){
-    const s = game.stars[i]; const dx = s.x - mx, dy = s.y - my;
-    if(dx*dx + dy*dy <= s.r*s.r){
-      s.clicked=true;
-      if(s.color.includes('255,200')) game.score += 10;
-      else if(s.color.includes('150,150')) { game.lives--; document.getElementById('game-lives').textContent = game.lives; }
-      else game.score += 3;
-      game.stars.splice(i,1);
-      document.getElementById('game-score').textContent = game.score;
-      break;
-    }
-  }
-});
-function endGame(){
-  game.running=false;
-  openGenericModal('Game Over', `<p style="color:var(--accent)">Score: ${game.score}</p><p>Nice play — try again or return to the site.</p>`, 'Play again', ()=>{ startGame(); });
-}
-
-/* Game modal controls */
-function openGame(){ document.getElementById('game-modal').classList.add('show'); document.getElementById('game-modal').setAttribute('aria-hidden','false'); startGame(); }
-function closeGame(){ document.getElementById('game-modal').classList.remove('show'); document.getElementById('game-modal').setAttribute('aria-hidden','true'); game.running=false; }
-document.getElementById('game-open').addEventListener('click', ()=>{ openGame(); });
-document.getElementById('play-now').addEventListener('click', ()=>{ startGame(); });
-document.getElementById('close-game').addEventListener('click', ()=>{ closeGame(); });
-document.getElementById('restart-game').addEventListener('click', ()=>{ startGame(); });
-
-/* Slow connection detection: unobtrusive toast invite */
-function showToast(message, actionLabel, actionCb, ttl=12000){
-  const t = document.createElement('div'); t.className='toast'; t.innerHTML = `<div>${message}</div>`;
-  if(actionLabel){
-    const btn = document.createElement('button'); btn.textContent = actionLabel; btn.style.border='none'; btn.style.padding='8px 10px'; btn.style.borderRadius='8px'; btn.style.cursor='pointer';
-    btn.onclick = ()=>{ actionCb && actionCb(); if(document.body.contains(t)) document.body.removeChild(t); };
-    t.appendChild(btn);
-  }
-  document.body.appendChild(t);
-  setTimeout(()=>{ if(document.body.contains(t)) document.body.removeChild(t); }, ttl);
-}
-function checkConnection(){
-  const nav = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
-  let slow=false;
-  if(nav){ slow = (nav.effectiveType && (nav.effectiveType.includes('2g') || nav.effectiveType === 'slow-2g')) || (nav.downlink && nav.downlink < 0.4); }
-  else { slow = !navigator.onLine; }
-  if(slow){
-    showToast('Slow connection detected — play a short offline game while you wait.', 'Play', ()=>{ openGame(); }, 15000);
-  }
-}
-window.addEventListener('load', ()=>{ setTimeout(checkConnection, 3000); });
-
-/* Accessibility: close modals on Escape */
-window.addEventListener('keydown', (e)=>{ if(e.key === 'Escape'){ closeGenericModal(); closeGame(); } });
-
-/* ensure modals close when clicking outside panel */
-document.getElementById('generic-modal').addEventListener('click', (e)=>{
-  if(e.target.id === 'generic-modal') closeGenericModal();  
-});
-document.getElementById('game-modal').addEventListener('click', (e)=>{
-  if(e.target.id === 'game-modal') closeGame();  
-});
-</script>
+    </script>
 </body>
 </html>
