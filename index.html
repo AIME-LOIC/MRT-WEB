@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MRT: Made-in Rwanda Technologies - All-in-One Digital Ecosystem</title>
+    <title>MRT: Made-in Rwanda Technologies - Cyber Winter Edition</title>
     <link rel="shortcut icon" href="MRT-LOGO.png" type="image/png">
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
@@ -13,10 +13,11 @@
             theme: {
                 extend: {
                     colors: {
-                        'mrt-primary': '#10B981', // Emerald 500
-                        'mrt-secondary': '#059669', // Emerald 600
-                        'mrt-accent': '#34D399', // Emerald 400
-                        'mrt-dark': '#064E3B', // Emerald 900
+                        // --- FESTIVE COLOR PALETTE (Red, Dark Green, Gold) ---
+                        'mrt-primary': '#E74C3C',    // Classic Holiday Red
+                        'mrt-secondary': '#16A085',  // Dark Festive Green
+                        'mrt-accent': '#F1C40F',     // Golden Yellow
+                        'mrt-dark': '#1B263B',       // Winter Night Sky Blue
                     }
                 }
             }
@@ -30,6 +31,7 @@
             scroll-behavior: smooth; 
         }
         
+        /* Standard Animations */
         @keyframes fadeInUp {
             from { opacity: 0; transform: translateY(40px); }
             to { opacity: 1; transform: translateY(0); }
@@ -42,30 +44,67 @@
         
         @keyframes float {
             0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-10px); } /* Reduced float for subtlety */
+            50% { transform: translateY(-10px); }
         }
         
         @keyframes pulse-custom {
             0%, 100% { opacity: 1; transform: scale(1); }
             50% { opacity: 0.8; transform: scale(1.05); }
         }
+
+        /* SHIMMER ANIMATION */
+        @keyframes shimmer-gold {
+            0% { background-position: -400px 0; }
+            100% { background-position: 400px 0; }
+        }
         
+        .shimmer {
+            background: linear-gradient(90deg, #F1C40F 0%, #FFFFFF 50%, #F1C40F 100%);
+            background-size: 400px 100%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: shimmer-gold 4s infinite linear;
+        }
+
+        /* --- SNOWFALL ANIMATION CSS FIX --- */
+        .snow-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            overflow: hidden;
+            z-index: 50; 
+        }
+
+        /* FIX: Start high above and fall low below */
+        @keyframes fall {
+            0% { transform: translateY(-100vh) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(110vh) rotate(360deg); opacity: 0.4; }
+        }
+
+        .snowflake {
+            position: absolute;
+            color: #ecf0f1; 
+            opacity: 0.7;
+            text-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
+            /* Apply animation using inline styles for randomisation */
+            animation-name: fall;
+            animation-iteration-count: infinite;
+            animation-timing-function: linear;
+        }
+        /* --- END OF SNOWFALL FIX --- */
+
         .animate-fadeInUp { animation: fadeInUp 0.8s ease-out forwards; }
         .animate-fadeIn { animation: fadeIn 1s ease-out forwards; }
         .animate-float { animation: float 3s ease-in-out infinite; }
         .animate-pulse-custom { animation: pulse-custom 2s ease-in-out infinite; }
         
-        /* Utility for sequential animation */
-        .delay-100 { animation-delay: 0.1s; }
-        .delay-200 { animation-delay: 0.2s; }
-        .delay-300 { animation-delay: 0.3s; }
-        .delay-400 { animation-delay: 0.4s; }
-        .delay-500 { animation-delay: 0.5s; }
-        .delay-600 { animation-delay: 0.6s; }
-        .opacity-0 { opacity: 0; }
-        
+        /* Updated Gradient Text to Holiday Red & Green */
         .gradient-text {
-            background: linear-gradient(135deg, #10B981 0%, #059669 100%);
+            background: linear-gradient(135deg, #E74C3C 0%, #16A085 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
@@ -77,7 +116,8 @@
         
         .card-hover:hover {
             transform: translateY(-8px) scale(1.02);
-            box-shadow: 0 20px 40px rgba(16, 185, 129, 0.2);
+            /* Updated Shadow Color */
+            box-shadow: 0 20px 40px rgba(231, 76, 60, 0.2); 
         }
 
         .accordion-content {
@@ -92,56 +132,100 @@
         }
     </style>
 </head>
-<body class="bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100 transition-colors duration-300">
+<body class="bg-gray-50 dark:bg-mrt-dark text-gray-900 dark:text-gray-100 transition-colors duration-300">
 
-    <!-- Toast Notification -->
+    <div class="snow-container" aria-hidden="true">
+        <div class="snowflake" style="left: 5%; font-size: 1.2em; animation-duration: 22s; animation-delay: 0s;">❄</div>
+        <div class="snowflake" style="left: 15%; font-size: 1.5em; animation-duration: 18s; animation-delay: 1.5s;">❅</div>
+        <div class="snowflake" style="left: 25%; font-size: 0.9em; animation-duration: 25s; animation-delay: 3s;">❄</div>
+        <div class="snowflake" style="left: 35%; font-size: 1.1em; animation-duration: 16s; animation-delay: 5.5s;">❅</div>
+        <div class="snowflake" style="left: 45%; font-size: 1.4em; animation-duration: 20s; animation-delay: 7s;">❄</div>
+        <div class="snowflake" style="left: 55%; font-size: 0.8em; animation-duration: 23s; animation-delay: 9s;">❅</div>
+        <div class="snowflake" style="left: 65%; font-size: 1.3em; animation-duration: 19s; animation-delay: 11.5s;">❄</div>
+        <div class="snowflake" style="left: 75%; font-size: 1.0em; animation-duration: 17s; animation-delay: 13s;">❅</div>
+        <div class="snowflake" style="left: 85%; font-size: 1.6em; animation-duration: 21s; animation-delay: 14.5s;">❄</div>
+        <div class="snowflake" style="left: 95%; font-size: 1.2em; animation-duration: 15s; animation-delay: 1s;">❅</div>
+        <div class="snowflake" style="left: 2%; font-size: 0.7em; animation-duration: 18s; animation-delay: 2s;">❅</div>
+        <div class="snowflake" style="left: 10%; font-size: 1.1em; animation-duration: 24s; animation-delay: 4s;">❄</div>
+        <div class="snowflake" style="left: 20%; font-size: 1.3em; animation-duration: 15s; animation-delay: 6s;">❅</div>
+        <div class="snowflake" style="left: 30%; font-size: 0.9em; animation-duration: 22s; animation-delay: 8s;">❄</div>
+        <div class="snowflake" style="left: 40%; font-size: 1.0em; animation-duration: 16s; animation-delay: 10s;">❅</div>
+        <div class="snowflake" style="left: 50%; font-size: 1.5em; animation-duration: 25s; animation-delay: 12s;">❄</div>
+        <div class="snowflake" style="left: 60%; font-size: 1.2em; animation-duration: 19s; animation-delay: 14s;">❅</div>
+        <div class="snowflake" style="left: 70%; font-size: 0.8em; animation-duration: 17s; animation-delay: 0.5s;">❄</div>
+        <div class="snowflake" style="left: 80%; font-size: 1.4em; animation-duration: 20s; animation-delay: 2.5s;">❅</div>
+        <div class="snowflake" style="left: 90%; font-size: 1.1em; animation-duration: 23s; animation-delay: 4.5s;">❄</div>
+        <div class="snowflake" style="left: 3%; font-size: 1.3em; animation-duration: 18s; animation-delay: 6.5s;">❄</div>
+        <div class="snowflake" style="left: 13%; font-size: 0.7em; animation-duration: 25s; animation-delay: 8.5s;">❅</div>
+        <div class="snowflake" style="left: 23%; font-size: 1.6em; animation-duration: 16s; animation-delay: 10.5s;">❄</div>
+        <div class="snowflake" style="left: 33%; font-size: 1.0em; animation-duration: 20s; animation-delay: 12.5s;">❅</div>
+        <div class="snowflake" style="left: 43%; font-size: 1.2em; animation-duration: 17s; animation-delay: 14.5s;">❄</div>
+        <div class="snowflake" style="left: 53%; font-size: 1.4em; animation-duration: 23s; animation-delay: 0.2s;">❅</div>
+        <div class="snowflake" style="left: 63%; font-size: 0.9em; animation-duration: 19s; animation-delay: 2.2s;">❄</div>
+        <div class="snowflake" style="left: 73%; font-size: 1.1em; animation-duration: 24s; animation-delay: 4.2s;">❅</div>
+        <div class="snowflake" style="left: 83%; font-size: 1.5em; animation-duration: 15s; animation-delay: 6.2s;">❄</div>
+        <div class="snowflake" style="left: 93%; font-size: 0.8em; animation-duration: 22s; animation-delay: 8.2s;">❅</div>
+        <div class="snowflake" style="left: 8%; font-size: 1.0em; animation-duration: 16s; animation-delay: 10.2s;">❄</div>
+        <div class="snowflake" style="left: 18%; font-size: 1.2em; animation-duration: 20s; animation-delay: 12.2s;">❅</div>
+        <div class="snowflake" style="left: 28%; font-size: 1.4em; animation-duration: 23s; animation-delay: 14.2s;">❄</div>
+        <div class="snowflake" style="left: 38%; font-size: 0.7em; animation-duration: 18s; animation-delay: 1.2s;">❅</div>
+        <div class="snowflake" style="left: 48%; font-size: 1.1em; animation-duration: 25s; animation-delay: 3.2s;">❄</div>
+        <div class="snowflake" style="left: 58%; font-size: 1.3em; animation-duration: 17s; animation-delay: 5.2s;">❅</div>
+        <div class="snowflake" style="left: 68%; font-size: 0.9em; animation-duration: 22s; animation-delay: 7.2s;">❄</div>
+        <div class="snowflake" style="left: 78%; font-size: 1.6em; animation-duration: 15s; animation-delay: 9.2s;">❅</div>
+        <div class="snowflake" style="left: 88%; font-size: 1.0em; animation-duration: 19s; animation-delay: 11.2s;">❄</div>
+        <div class="snowflake" style="left: 98%; font-size: 1.5em; animation-duration: 24s; animation-delay: 13.2s;">❅</div>
+        <div class="snowflake" style="left: 1%; font-size: 1.1em; animation-duration: 20s; animation-delay: 14.8s;">❄</div>
+        <div class="snowflake" style="left: 11%; font-size: 0.8em; animation-duration: 18s; animation-delay: 0.8s;">❅</div>
+        <div class="snowflake" style="left: 21%; font-size: 1.3em; animation-duration: 23s; animation-delay: 2.8s;">❄</div>
+        <div class="snowflake" style="left: 31%; font-size: 1.5em; animation-duration: 16s; animation-delay: 4.8s;">❅</div>
+        <div class="snowflake" style="left: 41%; font-size: 0.9em; animation-duration: 25s; animation-delay: 6.8s;">❄</div>
+        <div class="snowflake" style="left: 51%; font-size: 1.2em; animation-duration: 19s; animation-delay: 8.8s;">❅</div>
+        <div class="snowflake" style="left: 61%; font-size: 1.0em; animation-duration: 17s; animation-delay: 10.8s;">❄</div>
+        <div class="snowflake" style="left: 71%; font-size: 1.4em; animation-duration: 22s; animation-delay: 12.8s;">❅</div>
+        <div class="snowflake" style="left: 81%; font-size: 0.7em; animation-duration: 15s; animation-delay: 14.8s;">❄</div>
+        <div class="snowflake" style="left: 91%; font-size: 1.6em; animation-duration: 24s; animation-delay: 0.4s;">❅</div>
+    </div>
+
+
     <div id="toast" class="fixed top-5 right-5 z-50 transform translate-x-[500px] transition-all duration-500"></div>
 
-    <!-- Popup Overlay -->
     <div id="popup-overlay" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-black/70 backdrop-blur-sm" onclick="closePopupOnOverlay(event)">
         <div id="popup-content" class="bg-white dark:bg-gray-800 w-full max-w-lg rounded-2xl shadow-2xl transform scale-95 transition-all duration-300" onclick="event.stopPropagation()"></div>
     </div>
 
-    <!-- Mobile Menu -->
     <div id="mobile-menu" class="fixed inset-0 z-40 hidden bg-gray-900/95 backdrop-blur-lg">
         <div class="flex flex-col items-center justify-center h-full space-y-8 text-center">
             <a href="#home" onclick="closeMobileMenu()" class="text-2xl font-semibold text-white hover:text-mrt-primary transition">Home</a>
-            <a href="#problem" onclick="closeMobileMenu()" class="text-2xl font-semibold text-white hover:text-mrt-primary transition">Problem</a>
+            <a href="#problem" onclick="closeMobileMenu()" class="text-2xl font-semibold text-white hover:text-mrt-primary transition">Challenge</a>
             <a href="#solution" onclick="closeMobileMenu()" class="text-2xl font-semibold text-white hover:text-mrt-primary transition">Solution</a>
-            <a href="#developer" onclick="closeMobileMenu()" class="text-2xl font-semibold text-white hover:text-mrt-primary transition">Developers</a>
+            <a href="#developer" onclick="closeMobileMenu()" class="text-2xl font-semibold text-white hover:text-mrt-primary transition">Dev Hub</a>
             <a href="#support" onclick="closeMobileMenu()" class="text-2xl font-semibold text-white hover:text-mrt-primary transition">Support</a>
-            <button onclick="openWaitlistPopup(); closeMobileMenu();" class="bg-mrt-primary text-white px-8 py-3 rounded-lg font-semibold hover:bg-mrt-secondary transition">Get Started</button>
+            <button onclick="openWaitlistPopup(); closeMobileMenu();" class="bg-mrt-primary text-white px-8 py-3 rounded-lg font-semibold hover:bg-mrt-secondary transition">Activate Digital Future</button>
             <button onclick="closeMobileMenu()" class="absolute top-6 right-6 text-white text-4xl">&times;</button>
         </div>
     </div>
 
-    <!-- Navigation -->
     <nav class="fixed top-0 w-full bg-white/90 dark:bg-gray-900/90 backdrop-blur-md shadow-md z-30 transition-all duration-300">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between items-center h-16">
-                <!-- Logo -->
-                <!-- <a href="#home" class="flex items-center space-x-2 cursor-pointer">
-                    <div class="w-10 h-10 bg-gradient-to-br from-mrt-primary to-mrt-secondary rounded-lg flex items-center justify-center animate-pulse-custom">
-                        <span class="text-white font-bold text-xl">M</span>
-                    </div> -->
+                <a href="#home" class="flex items-center space-x-2 cursor-pointer">
                     <div>
                         <span class="text-2xl font-bold text-mrt-primary">MRT</span>
                         <p class="text-xs text-gray-500 dark:text-gray-400 -mt-1">Made-in Rwanda Technologies</p>
                     </div>
                 </a>
                 
-                <!-- Desktop Menu -->
                 <div class="hidden md:flex items-center space-x-8">
                     <a href="#home" class="text-sm font-medium hover:text-mrt-primary transition">Home</a>
-                    <a href="#problem" class="text-sm font-medium hover:text-mrt-primary transition">Problem</a>
+                    <a href="#problem" class="text-sm font-medium hover:text-mrt-primary transition">Challenge</a>
                     <a href="#solution" class="text-sm font-medium hover:text-mrt-primary transition">Solution</a>
-                    <a href="#developer" class="text-sm font-medium hover:text-mrt-primary transition">Developers</a>
+                    <a href="#developer" class="text-sm font-medium hover:text-mrt-primary transition">Dev Hub</a>
                     <a href="#support" class="text-sm font-medium hover:text-mrt-primary transition">Support</a>
                     <button onclick="toggleTheme()" class="p-2 rounded-lg bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition" id="theme-toggle"></button>
-                    <button onclick="openWaitlistPopup()" class="bg-mrt-primary text-white px-6 py-2 rounded-lg font-semibold hover:bg-mrt-secondary transition transform hover:scale-105">Get Started</button>
+                    <button onclick="openWaitlistPopup()" class="bg-mrt-primary text-white px-6 py-2 rounded-lg font-semibold hover:bg-mrt-secondary transition transform hover:scale-105">Activate Digital Future</button>
                 </div>
                 
-                <!-- Mobile Menu Button -->
                 <div class="md:hidden flex items-center space-x-4">
                     <button onclick="toggleTheme()" class="p-2 rounded-lg" id="theme-toggle-mobile"></button>
                     <button onclick="toggleMobileMenu()" class="text-3xl">
@@ -152,44 +236,42 @@
         </div>
     </nav>
 
-    <!-- Main Content -->
     <main class="pt-16">
         
-        <!-- Hero Section -->
         <section id="home" class="min-h-screen flex items-center justify-center bg-gradient-to-br from-mrt-primary/10 to-mrt-secondary/10 dark:from-mrt-dark/20 dark:to-mrt-secondary/20 px-4">
             <div class="max-w-7xl mx-auto grid md:grid-cols-2 gap-12 items-center py-20">
                 <div class="opacity-0 animate-fadeInUp">
                     <div class="flex items-center space-x-2 mb-6">
-                        <div class="px-3 py-1 bg-mrt-primary/10 rounded-full flex items-center space-x-2">
-                            <span class="w-2 h-2 bg-mrt-primary rounded-full animate-pulse-custom"></span>
-                            <span class="text-sm font-medium text-mrt-primary">Made in Rwanda 🇷🇼</span>
+                        <div class="px-3 py-1 bg-mrt-accent/20 rounded-full flex items-center space-x-2">
+                            <span class="w-2 h-2 bg-mrt-accent rounded-full animate-pulse-custom"></span>
+                            <span class="text-sm font-medium text-mrt-accent">Digital Winter ❄️</span>
                         </div>
                     </div>
                     <h1 class="text-5xl md:text-6xl lg:text-7xl font-black leading-tight mb-6">
-                        <span class="gradient-text">Your Digital Life,</span><br>
-                        <span class="text-gray-900 dark:text-white">Unified & Simplified</span>
+                        <span class="gradient-text">Your Digital Winter,</span><br>
+                        <span class="text-gray-900 dark:text-white">Unified & Secure</span>
                     </h1>
                     <p class="text-xl text-gray-600 dark:text-gray-300 mb-8 leading-relaxed">
-                        MRT is Rwanda's all-in-one digital ecosystem connecting people, technology, and services. One platform for payments, communication, app management, and innovation—built for <strong>developers</strong>, <strong>businesses</strong>, and <strong>individuals</strong> ready for the future.
+                        MRT is Rwanda's all-in-one digital ecosystem, a powerful foundation connecting people, technology, and essential services. One platform for digital finance, secure communication, app management, and innovation—built for Developers, Businesses, and Users ready for a secure digital future.
                     </p>
                     <div class="flex flex-col sm:flex-row gap-4">
                         <button onclick="openWaitlistPopup()" class="bg-mrt-primary text-white px-8 py-4 rounded-lg font-semibold text-lg hover:bg-mrt-secondary transition transform hover:scale-105 shadow-xl flex items-center justify-center">
-                            <i data-lucide="rocket" class="w-5 h-5 mr-2"></i>
-                            Join Waitlist
+                            <i data-lucide="zap" class="w-5 h-5 mr-2"></i>
+                            Activate Digital Future
                         </button>
                         <button onclick="openDemoPopup()" class="border-2 border-mrt-primary text-mrt-primary dark:text-mrt-accent px-8 py-4 rounded-lg font-semibold text-lg hover:bg-mrt-primary hover:text-white transition transform hover:scale-105 flex items-center justify-center">
-                            <i data-lucide="play-circle" class="w-5 h-5 mr-2"></i>
-                            Watch Demo
+                            <i data-lucide="terminal" class="w-5 h-5 mr-2"></i>
+                            Request Winter Demo
                         </button>
                     </div>
                     <div class="mt-8 flex items-center space-x-6 text-sm text-gray-600 dark:text-gray-400">
                         <div class="flex items-center">
-                            <i data-lucide="check-circle" class="w-5 h-5 text-mrt-primary mr-2"></i>
-                            No Credit Card Required
+                            <i data-lucide="cloud-lightning" class="w-5 h-5 text-mrt-primary mr-2"></i>
+                            24/7 Uptime Assurance
                         </div>
                         <div class="flex items-center">
-                            <i data-lucide="shield-check" class="w-5 h-5 text-mrt-primary mr-2"></i>
-                            100% Secure
+                            <i data-lucide="shield" class="w-5 h-5 text-mrt-primary mr-2"></i>
+                            Cyber-Secure Foundation
                         </div>
                     </div>
                 </div>
@@ -202,22 +284,22 @@
                                 <div class="bg-gradient-to-br from-mrt-primary to-mrt-secondary p-6 rounded-2xl text-white">
                                     <i data-lucide="wallet" class="w-10 h-10 mb-3"></i>
                                     <h3 class="font-bold text-lg">MRT Wallet</h3>
-                                    <p class="text-sm text-white/80 mt-2">Unified payment system</p>
+                                    <p class="text-sm text-white/80 mt-2">Digital payment gateway</p>
                                 </div>
-                                <div class="bg-gradient-to-br from-blue-500 to-blue-600 p-6 rounded-2xl text-white">
-                                    <i data-lucide="users" class="w-10 h-10 mb-3"></i>
+                                <div class="bg-gradient-to-br from-red-500 to-red-600 p-6 rounded-2xl text-white">
+                                    <i data-lucide="message-square" class="w-10 h-10 mb-3"></i>
                                     <h3 class="font-bold text-lg">MRT Connect</h3>
-                                    <p class="text-sm text-white/80 mt-2">Seamless collaboration</p>
+                                    <p class="text-sm text-white/80 mt-2">Unified messaging</p>
                                 </div>
-                                <div class="bg-gradient-to-br from-purple-500 to-purple-600 p-6 rounded-2xl text-white">
+                                <div class="bg-gradient-to-br from-yellow-500 to-yellow-600 p-6 rounded-2xl text-white">
                                     <i data-lucide="code" class="w-10 h-10 mb-3"></i>
                                     <h3 class="font-bold text-lg">MRT x</h3>
-                                    <p class="text-sm text-white/80 mt-2">Developer platform</p>
+                                    <p class="text-sm text-white/80 mt-2">Dev platform</p>
                                 </div>
-                                <div class="bg-gradient-to-br from-orange-500 to-orange-600 p-6 rounded-2xl text-white">
+                                <div class="bg-gradient-to-br from-mrt-secondary to-mrt-primary p-6 rounded-2xl text-white">
                                     <i data-lucide="box" class="w-10 h-10 mb-3"></i>
                                     <h3 class="font-bold text-lg">MRT Hub</h3>
-                                    <p class="text-sm text-white/80 mt-2">Central ecosystem</p>
+                                    <p class="text-sm text-white/80 mt-2">Central app registry</p>
                                 </div>
                             </div>
                         </div>
@@ -226,43 +308,42 @@
             </div>
         </section>
         
-        <!-- Background Story -->
         <section class="py-20 px-4 bg-white dark:bg-gray-800">
             <div class="max-w-6xl mx-auto">
                 <div class="text-center mb-16">
-                    <h2 class="text-4xl md:text-5xl font-bold gradient-text mb-4">The Story Behind MRT</h2>
-                    <p class="text-xl text-gray-600 dark:text-gray-300">Born from Rwanda's vision for digital transformation</p>
+                    <h2 class="text-4xl md:text-5xl font-bold gradient-text mb-4">The Genesis of MRT</h2>
+                    <p class="text-xl text-gray-600 dark:text-gray-300">Born from Rwanda's need for digital unity</p>
                 </div>
                 
                 <div class="grid md:grid-cols-2 gap-12">
                     <div>
                         <div class="bg-gradient-to-br from-mrt-primary/10 to-mrt-secondary/10 p-8 rounded-2xl mb-8">
                             <div class="w-16 h-16 bg-mrt-primary rounded-xl flex items-center justify-center mb-6">
-                                <i data-lucide="lightbulb" class="w-8 h-8 text-white"></i>
+                                <i data-lucide="star" class="w-8 h-8 text-white"></i>
                             </div>
-                            <h3 class="text-2xl font-bold mb-4 text-gray-900 dark:text-white">The Genesis</h3>
+                            <h3 class="text-2xl font-bold mb-4 text-gray-900 dark:text-white">The Digital Spark</h3>
                             <p class="text-gray-600 dark:text-gray-300 leading-relaxed mb-4">
-                                In the heart of Kigali, Rwanda, a team of visionaries at <strong>1%</strong> recognized a critical challenge: Africa's digital landscape was fragmented. Developers were building in silos, businesses were juggling multiple platforms, and individuals were overwhelmed by disconnected digital tools.
+                                In the heart of Kigali, the team at <strong>1%</strong> saw that while digital tools were growing, the feeling of connection often got lost in the complexity. Developers were building in silos, and essential services were scattered across disconnected apps.
                             </p>
                             <p class="text-gray-600 dark:text-gray-300 leading-relaxed">
-                                MRT was born from a simple question: <em>"What if we could unify the entire digital experience into one intelligent ecosystem?"</em> This wasn't just about building another app—it was about reimagining how technology serves African innovation.
+                                MRT was born from a fundamental question: <em>"What if we could unify the entire digital experience into one intelligent, self-securing ecosystem?"</em> This wasn't just about building an app—it was about enabling Rwandan innovation on a global scale.
                             </p>
                         </div>
                     </div>
                     
                     <div>
-                        <div class="bg-gradient-to-br from-blue-50 to-purple-50 dark:from-gray-700 dark:to-gray-600 p-8 rounded-2xl mb-8">
-                            <div class="w-16 h-16 bg-blue-600 rounded-xl flex items-center justify-center mb-6">
-                                <i data-lucide="target" class="w-8 h-8 text-white"></i>
+                        <div class="bg-gradient-to-br from-red-50 to-mrt-accent/10 dark:from-gray-700 dark:to-gray-600 p-8 rounded-2xl mb-8">
+                            <div class="w-16 h-16 bg-mrt-secondary rounded-xl flex items-center justify-center mb-6">
+                                <i data-lucide="heart-handshake" class="w-8 h-8 text-white"></i>
                             </div>
-                            <h3 class="text-2xl font-bold mb-4 text-gray-900 dark:text-white">Our Mission</h3>
+                            <h3 class="text-2xl font-bold mb-4 text-gray-900 dark:text-white">Our Core Mission</h3>
                             <p class="text-gray-600 dark:text-gray-300 leading-relaxed mb-4">
-                                To empower <strong>developers, businesses, and individuals</strong> across Africa and beyond with a unified digital ecosystem that eliminates complexity, enhances security, and accelerates innovation.
+                                To empower **Developers, Businesses, and Users** across Africa and beyond with a unified digital ecosystem that enhances security, simplifies access, and accelerates innovation.
                             </p>
                             <div class="space-y-3 mt-6">
                                 <div class="flex items-start space-x-3">
                                     <i data-lucide="check" class="w-5 h-5 text-mrt-primary mt-1 flex-shrink-0"></i>
-                                    <p class="text-sm text-gray-600 dark:text-gray-300">Enable seamless digital experiences for all users</p>
+                                    <p class="text-sm text-gray-600 dark:text-gray-300">Enable seamless digital finance and payment exchange</p>
                                 </div>
                                 <div class="flex items-start space-x-3">
                                     <i data-lucide="check" class="w-5 h-5 text-mrt-primary mt-1 flex-shrink-0"></i>
@@ -270,7 +351,7 @@
                                 </div>
                                 <div class="flex items-start space-x-3">
                                     <i data-lucide="check" class="w-5 h-5 text-mrt-primary mt-1 flex-shrink-0"></i>
-                                    <p class="text-sm text-gray-600 dark:text-gray-300">Drive digital transformation from Rwanda to the world</p>
+                                    <p class="text-sm text-gray-600 dark:text-gray-300">Provide a secure digital identity from Rwanda to the world</p>
                                 </div>
                             </div>
                         </div>
@@ -285,80 +366,79 @@
                         <h3 class="text-2xl font-bold">Our Vision</h3>
                     </div>
                     <p class="text-lg text-white/90 leading-relaxed">
-                        To become Africa's leading digital ecosystem platform, where every developer can innovate freely, every business can scale effortlessly, and every individual can navigate the digital world with confidence and security. We envision a future where MRT is synonymous with digital excellence—Made in Rwanda, built for the world.
+                        To become Africa's leading digital ecosystem platform, where every developer can innovate freely, every business can scale effortlessly, and every individual can navigate the digital world with confidence and security. We envision a future where MRT is synonymous with digital power—Made in Rwanda, built for the world.
                     </p>
                 </div>
             </div>
         </section>
 
-        <!-- Problem Statement -->
         <section id="problem" class="py-20 px-4 bg-gray-100 dark:bg-gray-900">
             <div class="max-w-6xl mx-auto">
                 <div class="text-center mb-16">
-                    <div class="inline-block px-4 py-2 bg-red-100 dark:bg-red-900/30 rounded-full mb-4">
-                        <span class="text-red-600 dark:text-red-400 font-semibold">The Challenge We're Solving</span>
+                    <div class="inline-block px-4 py-2 bg-mrt-accent/20 dark:bg-mrt-accent/20 rounded-full mb-4">
+                        <span class="text-mrt-accent font-semibold">The Challenge We're Solving</span>
                     </div>
                     <h2 class="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-6">The Digital Fragmentation Crisis</h2>
                     <p class="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
-                        Today's digital landscape is broken. Users, developers, and businesses face unprecedented complexity.
+                        Our modern digital lives are fragmented. Using, connecting, and building feels unnecessarily complex and insecure.
                     </p>
                 </div>
                 
                 <div class="grid md:grid-cols-3 gap-8 mb-16">
                     <div class="bg-white dark:bg-gray-800 p-8 rounded-2xl shadow-lg card-hover">
-                        <div class="w-16 h-16 bg-red-100 dark:bg-red-900/30 rounded-xl flex items-center justify-center mb-6">
-                            <i data-lucide="alert-triangle" class="w-8 h-8 text-red-600 dark:text-red-400"></i>
+                        <div class="w-16 h-16 bg-mrt-primary/20 dark:bg-mrt-primary/30 rounded-xl flex items-center justify-center mb-6">
+                            <i data-lucide="user-x" class="w-8 h-8 text-mrt-primary dark:text-mrt-primary"></i>
                         </div>
-                        <h3 class="text-xl font-bold mb-4 text-gray-900 dark:text-white">For Individuals</h3>
+                        <h3 class="text-xl font-bold mb-4 text-gray-900 dark:text-white">For Users</h3>
                         <ul class="space-y-3 text-gray-600 dark:text-gray-300">
-                            <li class="flex items-start"><span class="text-red-500 mr-2">•</span>Managing 20+ apps for daily digital tasks</li>
-                            <li class="flex items-start"><span class="text-red-500 mr-2">•</span>Remembering countless passwords and logins</li>
-                            <li class="flex items-start"><span class="text-red-500 mr-2">•</span>Security vulnerabilities from fragmented systems</li>
-                            <li class="flex items-start"><span class="text-red-500 mr-2">•</span>Complicated payment processes across platforms</li>
-                            <li class="flex items-start"><span class="text-red-500 mr-2">•</span>Data scattered across disconnected services</li>
+                            <li class="flex items-start"><span class="text-mrt-primary mr-2">•</span>Juggling 20+ apps for daily coordination</li>
+                            <li class="flex items-start"><span class="text-mrt-primary mr-2">•</span>Wasting time with complicated payment transfers</li>
+                            <li class="flex items-start"><span class="text-mrt-primary mr-2">•</span>Security concerns when using unknown third-party apps</li>
+                            <li class="flex items-start"><span class="text-mrt-primary mr-2">•</span>Complicated payment processes for essential services</li>
+                            <li class="flex items-start"><span class="text-mrt-primary mr-2">•</span>Data scattered across disconnected services</li>
                         </ul>
                     </div>
                     
                     <div class="bg-white dark:bg-gray-800 p-8 rounded-2xl shadow-lg card-hover">
-                        <div class="w-16 h-16 bg-red-100 dark:bg-red-900/30 rounded-xl flex items-center justify-center mb-6">
-                            <i data-lucide="code-2" class="w-8 h-8 text-red-600 dark:text-red-400"></i>
+                        <div class="w-16 h-16 bg-mrt-primary/20 dark:bg-mrt-primary/30 rounded-xl flex items-center justify-center mb-6">
+                            <i data-lucide="hammer" class="w-8 h-8 text-mrt-primary dark:text-mrt-primary"></i>
                         </div>
-                        <h3 class="text-xl font-bold mb-4 text-gray-900 dark:text-white">For Developers</h3>
+                        <h3 class="text-xl font-bold mb-4 text-gray-900 dark:text-white">For Developers (MRT x)</h3>
                         <ul class="space-y-3 text-gray-600 dark:text-gray-300">
-                            <li class="flex items-start"><span class="text-red-500 mr-2">•</span>Building authentication systems from scratch</li>
-                            <li class="flex items-start"><span class="text-red-500 mr-2">•</span>Integrating multiple payment gateways separately</li>
-                            <li class="flex items-start"><span class="text-red-500 mr-2">•</span>Limited distribution channels for applications</li>
-                            <li class="flex items-start"><span class="text-red-500 mr-2">•</span>Difficulty monetizing solutions effectively</li>
-                            <li class="flex items-start"><span class="text-red-500 mr-2">•</span>No unified testing and deployment platform</li>
+                            <li class="flex items-start"><span class="text-mrt-primary mr-2">•</span>Building authentication systems from scratch</li>
+                            <li class="flex items-start"><span class="text-mrt-primary mr-2">•</span>Integrating multiple local payment gateways</li>
+                            <li class="flex items-start"><span class="text-mrt-primary mr-2">•</span>Limited distribution channels for new apps</li>
+                            <li class="flex items-start"><span class="text-mrt-primary mr-2">•</span>Difficulty monetizing solutions effectively</li>
+                            <li class="flex items-start"><span class="text-mrt-primary mr-2">•</span>No unified testing and deployment environment</li>
                         </ul>
                     </div>
                     
                     <div class="bg-white dark:bg-gray-800 p-8 rounded-2xl shadow-lg card-hover">
-                        <div class="w-16 h-16 bg-red-100 dark:bg-red-900/30 rounded-xl flex items-center justify-center mb-6">
-                            <i data-lucide="briefcase" class="w-8 h-8 text-red-600 dark:text-red-400"></i>
+                        <div class="w-16 h-16 bg-mrt-primary/20 dark:bg-mrt-primary/30 rounded-xl flex items-center justify-center mb-6">
+                            <i data-lucide="factory" class="w-8 h-8 text-mrt-primary dark:text-mrt-primary"></i>
                         </div>
                         <h3 class="text-xl font-bold mb-4 text-gray-900 dark:text-white">For Businesses</h3>
                         <ul class="space-y-3 text-gray-600 dark:text-gray-300">
-                            <li class="flex items-start"><span class="text-red-500 mr-2">•</span>Managing subscriptions across multiple platforms</li>
-                            <li class="flex items-start"><span class="text-red-500 mr-2">•</span>Complex integration of business tools</li>
-                            <li class="flex items-start"><span class="text-red-500 mr-2">•</span>High operational costs from platform fees</li>
-                            <li class="flex items-start"><span class="text-red-500 mr-2">•</span>Difficulty scaling digital operations efficiently</li>
-                            <li class="flex items-start"><span class="text-red-500 mr-2">•</span>Limited access to verified digital services</li>
+                            <li class="flex items-start"><span class="text-mrt-primary mr-2">•</span>Managing services across multiple platforms</li>
+                            <li class="flex items-start"><span class="text-mrt-primary mr-2">•</span>Complex integration of sales and management tools</li>
+                            <li class="flex items-start"><span class="text-mrt-primary mr-2">•</span>High operational costs from payment processing fees</li>
+                            <li class="flex items-start"><span class="text-mrt-primary mr-2">•</span>Difficulty scaling digital operations efficiently</li>
+                            <li class="flex items-start"><span class="text-mrt-primary mr-2">•</span>Limited access to verified digital service providers</li>
                         </ul>
                     </div>
                 </div>
                 
-                <div class="bg-gradient-to-r from-red-50 to-orange-50 dark:from-red-900/20 dark:to-orange-900/20 p-8 rounded-2xl border-2 border-red-200 dark:border-red-800">
+                <div class="bg-gradient-to-r from-red-50 to-mrt-accent/10 dark:from-mrt-primary/20 dark:to-mrt-accent/10 p-8 rounded-2xl border-2 border-mrt-primary/50 dark:border-mrt-primary/50">
                     <div class="flex items-start space-x-4">
                         <div class="flex-shrink-0">
-                            <div class="w-12 h-12 bg-red-600 rounded-lg flex items-center justify-center">
+                            <div class="w-12 h-12 bg-mrt-primary rounded-lg flex items-center justify-center">
                                 <i data-lucide="trending-down" class="w-6 h-6 text-white"></i>
                             </div>
                         </div>
                         <div>
-                            <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-3">The Real Cost</h3>
+                            <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-3">The Cost of Complexity</h3>
                             <p class="text-gray-700 dark:text-gray-300 text-lg leading-relaxed mb-4">
-                                This fragmentation isn't just inconvenient—it's costly. Users waste <strong>hours daily</strong> switching between apps. Developers spend <strong>months</strong> rebuilding common infrastructure. Businesses lose <strong>thousands</strong> in operational inefficiencies. Africa's digital potential is being held back by unnecessary complexity.
+                                This fragmentation is costly. Users waste <strong>hours daily</strong> switching between apps. Developers spend **months** rebuilding common infrastructure. Businesses lose **thousands** in operational inefficiencies. Rwanda's digital potential is being held back by unnecessary complexity.
                             </p>
                             <p class="text-gray-700 dark:text-gray-300 text-lg leading-relaxed font-semibold">
                                 It's time for a unified solution. It's time for MRT.
@@ -369,12 +449,11 @@
             </div>
         </section>
 
-        <!-- Solution & Features (Continuation) -->
         <section id="solution" class="py-20 px-4 bg-white dark:bg-gray-800">
             <div class="max-w-7xl mx-auto">
                 <div class="text-center mb-16">
                     <div class="inline-block px-4 py-2 bg-mrt-primary/10 rounded-full mb-4">
-                        <span class="text-mrt-primary font-semibold">Our Solution</span>
+                        <span class="text-mrt-primary font-semibold">Our Unified Solution</span>
                     </div>
                     <h2 class="text-4xl md:text-5xl font-bold gradient-text mb-6">The MRT Ecosystem: Everything Unified</h2>
                     <p class="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
@@ -382,101 +461,93 @@
                     </p>
                 </div>
                 
-                <!-- Core Features -->
                 <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8 mb-16">
                     <div class="bg-gradient-to-br from-mrt-primary to-mrt-secondary p-8 rounded-2xl text-white card-hover">
                         <i data-lucide="user-check" class="w-12 h-12 mb-4"></i>
                         <h3 class="text-2xl font-bold mb-3">MRT Global Account</h3>
                         <p class="text-white/90 leading-relaxed">
-                            One account for your entire digital life. Automatically authenticated across every integrated app and service. No more juggling credentials—your single MRT ID unlocks everything.
+                            One secure digital ID for your entire online life. Automatically authenticated across every integrated app. No more juggling logins—your MRT ID unlocks the digital world.
                         </p>
                     </div>
                     
-                    <div class="bg-gradient-to-br from-blue-500 to-blue-600 p-8 rounded-2xl text-white card-hover">
-                        <i data-lucide="fingerprint" class="w-12 h-12 mb-4"></i>
+                    <div class="bg-gradient-to-br from-red-500 to-red-600 p-8 rounded-2xl text-white card-hover">
+                        <i data-lucide="lock" class="w-12 h-12 mb-4"></i>
                         <h3 class="text-2xl font-bold mb-3">Passwordless Security</h3>
                         <p class="text-white/90 leading-relaxed">
-                            Your device IS your security. Use biometrics (fingerprint, Face ID) for instant authentication. Email OTP for recovery. Zero passwords to remember or forget.
+                            Your device IS your key. Use biometrics (fingerprint, Face ID) for instant, secure authentication. Zero passwords to remember or forget—just secure access.
                         </p>
                     </div>
                     
-                    <div class="bg-gradient-to-br from-purple-500 to-purple-600 p-8 rounded-2xl text-white card-hover">
-                        <i data-lucide="wallet" class="w-12 h-12 mb-4"></i>
+                    <div class="bg-gradient-to-br from-mrt-accent/90 to-mrt-accent p-8 rounded-2xl text-white card-hover">
+                        <i data-lucide="piggy-bank" class="w-12 h-12 mb-4"></i>
                         <h3 class="text-2xl font-bold mb-3">Universal MRT Wallet</h3>
                         <p class="text-white/90 leading-relaxed">
-                            Add funds once, pay anywhere in the ecosystem. Support for bank transfers, mobile money, and seamless withdrawals. Your financial hub for all premium services.
+                            Add funds once, pay anywhere in the ecosystem. Seamless support for local mobile money and bank transfers for transactions and services.
                         </p>
                     </div>
                     
-                    <!-- FINISHED CARD (Was cut off here) -->
-                    <div class="bg-gradient-to-br from-orange-500 to-orange-600 p-8 rounded-2xl text-white card-hover">
+                    <div class="bg-gradient-to-br from-mrt-secondary to-mrt-primary p-8 rounded-2xl text-white card-hover">
                         <i data-lucide="box" class="w-12 h-12 mb-4"></i>
-                        <h3 class="text-2xl font-bold mb-3">MRT Hub & App Store</h3>
+                        <h3 class="text-2xl font-bold mb-3">MRT Hub & Gateway</h3>
                         <p class="text-white/90 leading-relaxed">
                             A centralized marketplace for all third-party and native MRT applications. Discover, install, and manage your entire digital toolkit from a single, trusted source.
                         </p>
                     </div>
                 </div>
 
-                <!-- Developer Platform Section (MRT x) -->
-                 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <section id="developer" class="py-16">
-            <div class="grid md:grid-cols-2 gap-12 items-center bg-white dark:bg-gray-900 p-8 rounded-3xl shadow-2xl border border-mrt-primary/20">
+            <div class="grid md:grid-cols-2 gap-12 items-center bg-white dark:bg-gray-900 p-8 rounded-3xl shadow-2xl border border-mrt-accent/50">
                 
-                <!-- Left Column: Text Content -->
                 <div>
-                    <div class="inline-block px-4 py-2 bg-purple-100 dark:bg-purple-900/30 rounded-full mb-4">
-                        <span class="text-purple-600 dark:text-purple-400 font-semibold">MRT x - For Innovators</span>
+                    <div class="inline-block px-4 py-2 bg-mrt-accent/20 dark:bg-mrt-accent/30 rounded-full mb-4">
+                        <span class="text-mrt-accent font-semibold">MRT x - Developer Platform</span>
                     </div>
-                    <h2 class="text-4xl font-bold text-gray-900 dark:text-white mb-6">Build Faster, Reach Further</h2>
+                    <h2 class="text-4xl font-bold text-gray-900 dark:text-white mb-6">Build Digital Power Faster</h2>
                     <p class="text-lg text-gray-600 dark:text-gray-300 mb-8">
-                        MRT x is our integrated developer platform designed to accelerate innovation in Rwanda and across Africa. Stop worrying about boilerplate and start building your breakthrough idea.
+                        MRT x is our integrated developer platform designed to accelerate innovation. Stop worrying about chimneys and start building your breakthrough idea.
                     </p>
                     <ul class="space-y-6 text-gray-700 dark:text-gray-300">
                         <li class="flex items-start space-x-3">
-                            <!-- Icon setup for Lucide -->
-                            <i data-lucide="cloud" class="w-6 h-6 text-purple-600 flex-shrink-0 mt-0.5"></i>
+                            <i data-lucide="cloud-lightning" class="w-6 h-6 text-mrt-accent flex-shrink-0 mt-0.5"></i>
                             <div>
                                 <h4 class="font-semibold text-lg text-gray-900 dark:text-white">Unified API Access</h4>
-                                <p class="text-sm">Access Identity, Payments (Wallet), and Communication via simple, unified REST APIs.</p>
+                                <p class="text-sm">Access Identity, Payments (Wallet), and Communication via simple, unified REST APIs for your application.</p>
                             </div>
                         </li>
                         <li class="flex items-start space-x-3">
-                            <i data-lucide="gift" class="w-6 h-6 text-purple-600 flex-shrink-0 mt-0.5"></i>
+                            <i data-lucide="dollar-sign" class="w-6 h-6 text-mrt-accent flex-shrink-0 mt-0.5"></i>
                             <div>
                                 <h4 class="font-semibold text-lg text-gray-900 dark:text-white">Instant Monetization</h4>
-                                <p class="text-sm">Integrate with the MRT Wallet for subscriptions, one-time payments, and revenue sharing without third-party fees.</p>
+                                <p class="text-sm">Integrate with the MRT Wallet for subscriptions, one-time sales, and revenue sharing without third-party fees.</p>
                             </div>
                         </li>
                         <li class="flex items-start space-x-3">
-                            <i data-lucide="app-window" class="w-6 h-6 text-purple-600 flex-shrink-0 mt-0.5"></i>
+                            <i data-lucide="store" class="w-6 h-6 text-mrt-accent flex-shrink-0 mt-0.5"></i>
                             <div>
                                 <h4 class="font-semibold text-lg text-gray-900 dark:text-white">Guaranteed Distribution</h4>
-                                <p class="text-sm">Deploy directly to the MRT Hub App Store and instantly reach millions of verified users.</p>
+                                <p class="text-sm">Deploy directly to the MRT Hub Gateway and instantly reach millions of verified users.</p>
                             </div>
                         </li>
                     </ul>
                 </div>
 
-                <!-- Right Column: Code Block (Fixed for Mobile) -->
                 <div class="p-6 bg-gray-200 dark:bg-gray-700 rounded-xl shadow-inner">
-                    <!-- FIX: Added w-full class to ensure the <pre> block uses 100% of the available column width.
-                           This forces the overflow-x-auto to contain the content scroll within this box. -->
                     <pre class="w-full overflow-x-auto text-sm text-gray-800 dark:text-gray-200 p-2 break-words whitespace-pre-wrap">
 <code class="language-javascript">
-// Sample API call for Wallet payment
-async function chargeUser(userId, amount) {
-    const response = await fetch('/mrt-x/api/v1/payments/charge', {
+// Sample API call for Wallet payment transfer
+async function makePayment(recipientId, amount) {
+    const response = await fetch('/mrt-x/api/v1/payments/transfer', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
-            'Authorization': 'Bearer YOUR_API_KEY' // Ensure to replace with secure token flow
+            'Authorization': 'Bearer DEV_API_KEY'
         },
         body: JSON.stringify({
-            user_id: userId,
+            recipient_id: recipientId,
             amount: amount,
             currency: 'RWF',
-            description: 'In-app purchase'
+            description: 'Digital Service Payment'
         })
     });
     return response.json();
@@ -489,39 +560,36 @@ async function chargeUser(userId, amount) {
 
                 <div class="text-center mt-12">
                     <button onclick="openWaitlistPopup()" class="bg-mrt-primary text-white px-8 py-4 rounded-lg font-semibold text-lg hover:bg-mrt-secondary transition transform hover:scale-105 shadow-xl">
-                        Explore Full Features
+                        Explore Full MRT Features
                     </button>
                 </div>
             </div>
         </section>
 
-        <!-- Support & FAQ Section -->
         <section id="support" class="py-20 px-4 bg-gray-100 dark:bg-gray-900">
             <div class="max-w-6xl mx-auto">
                 <div class="text-center mb-16">
-                    <div class="inline-block px-4 py-2 bg-mrt-primary/10 rounded-full mb-4">
-                        <span class="text-mrt-primary font-semibold">Help & Resources</span>
+                    <div class="inline-block px-4 py-2 bg-mrt-accent/20 rounded-full mb-4">
+                        <span class="text-mrt-accent font-semibold">Winter Support & Resources</span>
                     </div>
-                    <h2 class="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-6">Frequently Asked Questions</h2>
+                    <h2 class="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-6">Frequently Asked Questions (FAQ)</h2>
                     <p class="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
                         Find quick answers about the MRT ecosystem, security, and developer features.
                     </p>
                 </div>
 
                 <div class="space-y-4 max-w-4xl mx-auto" id="accordion-container">
-                    <!-- Q1 -->
                     <div class="accordion-item bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700">
                         <button class="flex justify-between items-center w-full text-left font-semibold text-lg" onclick="toggleAccordion(this)">
-                            <span class="text-gray-900 dark:text-white">What is the "Global Account" and how does it simplify things?</span>
+                            <span class="text-gray-900 dark:text-white">What is the "Global Account" and how does it simplify access?</span>
                             <i data-lucide="chevron-down" class="w-5 h-5 transition-transform"></i>
                         </button>
                         <div class="accordion-content">
                             <p class="text-gray-600 dark:text-gray-300">
-                                The MRT Global Account is a single, verified identity that provides passwordless login to all integrated MRT and third-party applications. It eliminates the need for repeated registration and password management, offering immediate, secure access across the entire ecosystem.
+                                The MRT Global Account is a single, secure identity that provides passwordless login to all integrated MRT and third-party applications. It ensures seamless, secure access to all services within the ecosystem.
                             </p>
                         </div>
                     </div>
-                    <!-- Q2 -->
                     <div class="accordion-item bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700">
                         <button class="flex justify-between items-center w-full text-left font-semibold text-lg" onclick="toggleAccordion(this)">
                             <span class="text-gray-900 dark:text-white">Is MRT Wallet compatible with local mobile money services?</span>
@@ -529,11 +597,10 @@ async function chargeUser(userId, amount) {
                         </button>
                         <div class="accordion-content">
                             <p class="text-gray-600 dark:text-gray-300">
-                                Yes. The Universal MRT Wallet is designed to support seamless integration with major local banking and mobile money services in Rwanda (and other regions as we expand) for both instant deposits and withdrawals.
+                                Yes. The Universal MRT Wallet is designed to support seamless integration with major local mobile money services in Rwanda (and other regions as we expand) for instant deposits and withdrawals.
                             </p>
                         </div>
                     </div>
-                    <!-- Q3 -->
                     <div class="accordion-item bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700">
                         <button class="flex justify-between items-center w-full text-left font-semibold text-lg" onclick="toggleAccordion(this)">
                             <span class="text-gray-900 dark:text-white">How can developers join the MRT x platform?</span>
@@ -541,7 +608,7 @@ async function chargeUser(userId, amount) {
                         </button>
                         <div class="accordion-content">
                             <p class="text-gray-600 dark:text-gray-300">
-                                Developers can sign up for the MRT x beta program through the waitlist. Once accepted, you'll gain access to the unified SDKs, API documentation, and the developer console for testing and deployment to the MRT Hub App Store.
+                                Developers can sign up for the MRT x beta program through the waitlist. Once accepted, you'll gain access to the unified SDKs, API documentation, and the developer console for testing and deployment to the MRT Hub Gateway.
                             </p>
                         </div>
                     </div>
@@ -549,30 +616,24 @@ async function chargeUser(userId, amount) {
             </div>
         </section>
 
-        <!-- Final Call to Action -->
         <section class="py-24 px-4 bg-gradient-to-r from-mrt-primary to-mrt-secondary dark:from-mrt-dark dark:to-mrt-secondary">
             <div class="max-w-5xl mx-auto text-center">
-                <h2 class="text-4xl md:text-5xl font-extrabold text-white mb-6">Ready to Lead the Digital Future?</h2>
+                <h2 class="text-4xl md:text-5xl font-extrabold text-white mb-6">Ready to Build the Digital Future?</h2>
                 <p class="text-xl text-white/90 mb-10">
                     The future of unified digital experience is here. Join the MRT waitlist today and be among the first to experience the simplified ecosystem.
                 </p>
-                <button onclick="openWaitlistPopup()" class="bg-white text-mrt-primary px-10 py-4 rounded-lg font-bold text-xl hover:bg-gray-100 transition transform hover:scale-105 shadow-2xl shimmer">
-                    Sign Up for Early Access
+                <button onclick="openWaitlistPopup()" class="bg-white px-10 py-4 rounded-lg font-bold text-xl hover:bg-gray-100 transition transform hover:scale-105 shadow-2xl">
+                    <span class="shimmer">Sign Up for Cyber Access</span>
                 </button>
             </div>
         </section>
 
     </main>
 
-    <!-- Footer -->
     <footer class="bg-gray-800 dark:bg-gray-950 text-gray-300 py-12 px-4">
         <div class="max-w-7xl mx-auto grid grid-cols-2 md:grid-cols-5 gap-8">
             <div class="col-span-2 md:col-span-2">
-                <!-- <a href="#home" class="flex items-center space-x-2 mb-4">
-                    <div class="w-8 h-8 bg-mrt-primary rounded-lg flex items-center justify-center">
-                        <span class="text-white font-bold text-lg">M</span>
-                    </div> -->
-                    <span class="text-2xl font-bold text-mrt-primary">MRT</span>
+                <span class="text-2xl font-bold text-mrt-primary">MRT</span>
                 </a>
                 <p class="text-sm">Made-in Rwanda Technologies. Unifying Africa's digital ecosystem from Kigali.</p>
                 <div class="flex space-x-4 mt-6">
@@ -583,21 +644,21 @@ async function chargeUser(userId, amount) {
             </div>
 
             <div>
-                <h4 class="font-semibold text-white mb-4">Product</h4>
+                <h4 class="font-semibold text-white mb-4">Core Platforms</h4>
                 <ul class="space-y-3 text-sm">
                     <li><a href="#solution" class="hover:text-mrt-primary transition">MRT Wallet</a></li>
                     <li><a href="#solution" class="hover:text-mrt-primary transition">MRT Global Account</a></li>
-                    <li><a href="#developer" class="hover:text-mrt-primary transition">MRT x (API)</a></li>
+                    <li><a href="#developer" class="hover:text-mrt-primary transition">MRT x (Developer API)</a></li>
                     <li><a href="#solution" class="hover:text-mrt-primary transition">MRT Hub</a></li>
                 </ul>
             </div>
 
             <div>
-                <h4 class="font-semibold text-white mb-4">Company</h4>
+                <h4 class="font-semibold text-white mb-4">Corporate</h4>
                 <ul class="space-y-3 text-sm">
                     <li><a href="https://onepercent-rwanda.onrender.com/#about" class="hover:text-mrt-primary transition">Our Story</a></li>
-                    <li><a href="https://onepercent-rwanda.onrender.com/#contact" onclick="openWaitlistPopup(); return false;" class="hover:text-mrt-primary transition">Careers (Hiring)</a></li>
-                    <li><a href="https://onepercent-rwanda.onrender.com/#contact" onclick="showToast('Email us at info@mrt.rw', 'info'); return false;" class="hover:text-mrt-primary transition">Contact Us</a></li>
+                    <li><a href="https://onepercent-rwanda.onrender.com/#contact" onclick="openWaitlistPopup(); return false;" class="hover:text-mrt-primary transition">Careers</a></li>
+                    <li><a href="https://onepercent-rwanda.onrender.com/#contact" onclick="showToast('Email us at info@mrt.rw', 'info'); return false;" class="hover:text-mrt-primary transition">Contact Support</a></li>
                 </ul>
             </div>
             
@@ -612,11 +673,10 @@ async function chargeUser(userId, amount) {
         </div>
 
         <div class="border-t border-gray-700 mt-8 pt-6 text-center text-sm text-gray-400">
-            &copy; <span id="current-year"></span> MRT: Made-in Rwanda Technologies. All rights reserved.
+            &copy; <span id="current-year"></span> MRT: Made-in Rwanda Technologies. Cyber Winter Edition ❄️
         </div>
     </footer>
 
-    <!-- JavaScript Logic -->
     <script>
         // Set the current year in the footer
         document.getElementById('current-year').textContent = new Date().getFullYear();
@@ -629,7 +689,8 @@ async function chargeUser(userId, amount) {
         // Function to set the icon based on current theme
         function setIcon(element) {
             const isDark = htmlElement.classList.contains('dark');
-            const iconName = isDark ? 'sun' : 'moon';
+            // Updated icons: Sun for light, Moon for dark (default cool icons)
+            const iconName = isDark ? 'moon' : 'sun'; 
             element.innerHTML = `<i data-lucide="${iconName}" class="w-5 h-5 text-gray-900 dark:text-white"></i>`;
             // Re-render lucide icons
             lucide.createIcons();
@@ -679,9 +740,9 @@ async function chargeUser(userId, amount) {
                 info: 'bg-blue-600'
             };
             const iconMap = {
-                success: 'check-circle',
+                success: 'check-circle', 
                 error: 'x-circle',
-                info: 'info'
+                info: 'info' 
             };
 
             const bgColor = colorMap[type] || colorMap.success;
@@ -716,7 +777,7 @@ async function chargeUser(userId, amount) {
                 <div class="p-8">
                     <div class="flex justify-between items-center mb-6 border-b pb-3 dark:border-gray-700">
                         <h3 class="text-2xl font-bold gradient-text">${title}</h3>
-                        <button onclick="closePopup()" class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition">&times;</button>
+                        <button onclick="closePopup()" class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition text-4xl">&times;</button>
                     </div>
                     ${contentHTML}
                 </div>
@@ -752,35 +813,35 @@ async function chargeUser(userId, amount) {
 
         function openWaitlistPopup() {
             const content = `
-                <p class="mb-6 text-gray-600 dark:text-gray-300">Enter your email to receive early access news, beta invites, and developer API keys for MRT x.</p>
+                <p class="mb-6 text-gray-600 dark:text-gray-300">Enter your email to receive early access news, beta invites, and Developer API keys for MRT x.</p>
                 <form onsubmit="handleWaitlistSubmit(event)" class="space-y-4">
-                    <input type="email" id="waitlist-email" placeholder="Your Email Address" required 
+                    <input type="email" id="waitlist-email" placeholder="Your Professional Email Address" required 
                            class="w-full p-3 border border-gray-300 dark:border-gray-700 rounded-lg dark:bg-gray-700 dark:text-white focus:ring-mrt-primary focus:border-mrt-primary transition" />
                     <button type="submit" class="w-full bg-mrt-primary text-white p-3 rounded-lg font-semibold hover:bg-mrt-secondary transition transform hover:scale-[1.01]">
-                        Join the Waitlist Now
+                        Join the Access Waitlist
                     </button>
                 </form>
-                <p class="text-xs text-center text-gray-400 mt-4">We respect your privacy. No spam, ever.</p>
+                <p class="text-xs text-center text-gray-400 mt-4">We respect your privacy. Secure access guaranteed.</p>
             `;
-            openPopup('Join the MRT Waitlist', content);
+            openPopup('Join the MRT Access Waitlist', content);
         }
 
         function handleWaitlistSubmit(event) {
             event.preventDefault();
             const email = document.getElementById('waitlist-email').value;
             closePopup();
-            showToast(`Thank you, ${email}, you have successfully joined the MRT waitlist!`, 'success');
+            showToast(`Success! ${email}, you've joined the MRT access waitlist.`, 'success');
             // In a real application, you would send this data to a server here.
         }
 
         function openDemoPopup() {
             const content = `
                 <p class="mb-4 text-gray-600 dark:text-gray-300">
-                    A demonstration video of the MRT ecosystem is currently being produced. For now, here is a preview of our vision for a unified digital identity.
+                    The official MRT Winter Demo is currently being finalized. For now, see our core vision for a unified digital ecosystem.
                 </p>
                 <div class="aspect-video bg-gray-200 dark:bg-gray-700 rounded-xl flex items-center justify-center">
-                    <i data-lucide="monitor-play" class="w-16 h-16 text-mrt-primary"></i>
-                    <span class="ml-4 text-gray-500 dark:text-gray-400">Demo Placeholder Video</span>
+                    <i data-lucide="terminal" class="w-16 h-16 text-mrt-primary"></i>
+                    <span class="ml-4 text-gray-500 dark:text-gray-400">Developer Demo Placeholder</span>
                 </div>
                 <div class="mt-6 text-center">
                     <button onclick="closePopup()" class="border-2 border-mrt-primary text-mrt-primary px-6 py-2 rounded-lg font-semibold hover:bg-mrt-primary hover:text-white transition">
@@ -788,7 +849,7 @@ async function chargeUser(userId, amount) {
                     </button>
                 </div>
             `;
-            openPopup('Watch MRT Ecosystem Demo', content);
+            openPopup('Request MRT Winter Demo', content);
         }
 
         // ------------------ ACCORDION ------------------
