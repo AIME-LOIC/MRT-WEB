@@ -133,6 +133,9 @@
     </style>
 </head>
 <body class="bg-gray-50 dark:bg-mrt-dark text-gray-900 dark:text-gray-100 transition-colors duration-300">
+<audio id="bg-music" loop preload="auto">
+    <source src="Carol Of The Bells _ Christmas Music _ Instrumental Version [UK8BGACbzKc].mp3" type="audio/mpeg">
+</audio>
 
     <div class="snow-container" aria-hidden="true">
         <div class="snowflake" style="left: 5%; font-size: 1.2em; animation-duration: 22s; animation-delay: 0s;">❄</div>
@@ -203,6 +206,11 @@
             <a href="#support" onclick="closeMobileMenu()" class="text-2xl font-semibold text-white hover:text-mrt-primary transition">Support</a>
             <button onclick="openWaitlistPopup(); closeMobileMenu();" class="bg-mrt-primary text-white px-8 py-3 rounded-lg font-semibold hover:bg-mrt-secondary transition">Activate Digital Future</button>
             <button onclick="closeMobileMenu()" class="absolute top-6 right-6 text-white text-4xl">&times;</button>
+            <button onclick="toggleMusic()" 
+        class="p-2 rounded-lg bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition"
+        title="Toggle background music">
+    <i data-lucide="music" class="w-5 h-5"></i>
+</button>
         </div>
     </div>
 
@@ -224,6 +232,11 @@
                     <a href="#support" class="text-sm font-medium hover:text-mrt-primary transition">Support</a>
                     <button onclick="toggleTheme()" class="p-2 rounded-lg bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition" id="theme-toggle"></button>
                     <button onclick="openWaitlistPopup()" class="bg-mrt-primary text-white px-6 py-2 rounded-lg font-semibold hover:bg-mrt-secondary transition transform hover:scale-105">Activate Digital Future</button>
+                    <button onclick="toggleMusic()" 
+        class="p-2 rounded-lg bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition"
+        title="Toggle background music">
+    <i data-lucide="music" class="w-5 h-5"></i>
+</button>
                 </div>
                 
                 <div class="md:hidden flex items-center space-x-4">
@@ -231,6 +244,8 @@
                     <button onclick="toggleMobileMenu()" class="text-3xl">
                         <i data-lucide="menu" class="w-7 h-7 text-gray-900 dark:text-white"></i>
                     </button>
+                    
+
                 </div>
             </div>
         </div>
@@ -891,5 +906,34 @@ async function makePayment(recipientId, amount) {
             lucide.createIcons();
         });
     </script>
+    <script>
+const music = document.getElementById('bg-music');
+
+function toggleMusic() {
+    if (music.paused) {
+        music.volume = 0.25; // subtle
+        music.play();
+        localStorage.setItem('mrt_music', 'on');
+    } else {
+        music.pause();
+        localStorage.setItem('mrt_music', 'off');
+    }
+}
+
+// Restore preference
+document.addEventListener('DOMContentLoaded', () => {
+    const preference = localStorage.getItem('mrt_music');
+    if (preference === 'on') {
+        music.volume = 0.25;
+        music.play().catch(() => {});
+    }
+});
+
+// Pause when tab not visible
+document.addEventListener('visibilitychange', () => {
+    if (document.hidden) music.pause();
+});
+</script>
+
 </body>
 </html>
